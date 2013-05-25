@@ -1,4 +1,4 @@
-## Controller
+# Controller
 
 This is another `JSON` file where the key represents a **route** and the value is the view to render.
 
