@@ -21,11 +21,12 @@ At the very least, your app needs some views and a controller. Not all websites 
 ### Data
 
 - [**HTTP interface**](/docs/database) is how you interact with data.
-- [**Users**]
+
+- [**Users**](/docs/users) are built into Sproute applications.
 
 ### Tweaking
 
-- [**Config**](/docs/config) lets you tweak settings about your website.
+- <p>[**Config**](/docs/config) lets you tweak settings about your website.</p>
 
 ### Security
 
