@@ -29,6 +29,15 @@ Relative path to the directory of view files.
 "models": "modelsDir/"
 ~~~
 
+### port
+- default: `8000`
+
+The port to server the website from.
+
+~~~
+"port": 8080
+~~~
+
 ### extension
 - default: `sprt`
 
