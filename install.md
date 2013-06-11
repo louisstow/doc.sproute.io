@@ -45,7 +45,7 @@ Execute `install.sh` to install. Then run `start-server.sh` to test your website
 
 You need a name for the site. Let's say it was a simple blog, we will call the site `myfirstblog`.
 
-Edit `config.json` and replace the current value of name with our new name.
+Edit `config.json` and replace the current value of name with our new name. Add an `admin` key with a username and password.
 
 Then we need a home page. This is the first page the viewer will come across. Edit `controller.json` and add this to the object:
 
@@ -61,4 +61,6 @@ Create the file `home.sprt` under `views/`. Add any HTML to it.
 
 Then run the server with the script under your operating system directory.
 
-Target the website in your browser at [`http://localhost:8000`](http://localhost:8000).
+Target the website in your browser at [`http://localhost:8000`](http://localhost:8000). You should see the HTML rendered.
+
+**Remove the `admin` key previously created in the config as it is not needed after first run and poses a security risk.**

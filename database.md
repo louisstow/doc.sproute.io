@@ -51,6 +51,15 @@ POST /data/articles/_id/5196eecb08e4860000000001
 {category: "tech"}
 ~~~
 
+### /data/&lt;collection&gt;/&lt;field&gt;/&lt;value&gt;/inc
+
+Increment a numerical field. The body should have the field to increment as the key and the difference as the value. Can be a negative number to decrement.
+
+~~~
+POST /data/articles/_id/5196eecb08e4860000000001/inc
+{thumbsUp: 1}
+~~~
+
 ### Query Options:
 
 - `?goto=url`: After the POST redirect the location to a page.

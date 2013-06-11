@@ -1,6 +1,26 @@
 # Configuration
 
-Sproute uses a `JSON` file to configure any settings or options you need to tweak. Out of the box, you will not need to configure many of these values,
+Sproute uses a `JSON` file named `config.json` to configure any settings or options you need to tweak. Out of the box, you will not need to configure many of these values.
+
+### name
+
+This is the only required field in the config. It is used to create the database in Mongo. It should contain no spaces.
+
+~~~
+"name": "MyApp"
+~~~
+
+### admin
+- default: `{ name: 'admin', pass: 'admin' }`
+
+When first running your Sproute application you need to create an admin account. This is done by specifying the details under an admin key. Once the app is first started, you **should remove** this key as it poses a security risk.
+
+~~~
+"admin": {
+	"name": "louis",
+	"pass": "my strong password"
+}
+~~~
 
 ### controller
 - default: `controller.json`

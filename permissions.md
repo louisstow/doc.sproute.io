@@ -4,12 +4,20 @@ Sproute has user accounts built-in so security is simple. The basic concept is t
 
 ### User types
 
-The default user types are `admin` and `member`. You may extend this by creating a `users` [model](/docs/model) and creating a values array in order of superiority.
+The default user types are `admin` and `member`. You may extend this by creating a `users` [model](/docs/model) and creating a values array in order of superiority (see Heirarchy below).
+
+There are other special in-built user types you may use when specifying permissions:
+
+* `admin`: At least one admin account exists when Sproute is first installed. This account is defined in the [config](/docs/config).
+* `owner`: Will ensure the [`_creator`](/docs/database#in-built-fields) matches the logged in user.
+* `member`: Any logged in user.
+* `anyone`: No requirement.
+* `stranger`: Must *not* be logged in.
 
 ### Heirarchy
 
 All user types have a heirarchy of superiority. The default order is
-`admin > member`. This means any permission you give to a user type is also given to user types above it.
+`admin > owner > member > anyone`. This means any permission you give to a user type is also given to user types above it.
 
 ### permissions.json
 
