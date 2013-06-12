@@ -8,9 +8,13 @@ Sproute comes with User Accounts straight out of the box. To make use of them yo
 
 Create a session on the server for a user. If they are already logged in, an error will be returned.
 
-### POST /api/logout
+### GET /api/logout
 
-Sending a POST request to this URL will logout the currently logged in user.
+Sending a GET request to this URL will logout the currently logged in user. This is as simple as creating an anchor in HTML.
+
+~~~
+<a href="/api/logout?goto=/">Logout</a>
+~~~
 
 ### POST /api/register
 - `email`: Email address.
@@ -20,7 +24,7 @@ Sending a POST request to this URL will logout the currently logged in user.
 
 Use this end-point over `/data/users`. Will create a new user with the data provided. If you have extended the user model, include the data in the body.
 
-When specifying a role, you will only be allowed to use the lowest role (`member`). If you are logged in when creating a user, you can set the role to your level or lower.
+When specifying a role, you will only be allowed to use the lowest role (`member`). If you are logged in when creating a user, you can set the role to your level or lower. So if you are logged in as `admin`, you can set the role to `admin` or lower.
 
 ### GET /api/logged
 

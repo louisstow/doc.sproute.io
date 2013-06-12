@@ -52,6 +52,14 @@ If the field is not required and doesn't have a value, use this default value.
 "default": 0
 ~~~
 
+### unique
+
+Ensure that no duplicate values of this field can exist in the collection. This is useful for things like usernames where a user must have a unique name.
+
+~~~
+"unique": true
+~~~
+
 ### access
 
 This is a slightly more advanced restriction and allows you to specific which users can access the data in the field. Expects an object with a `w` (write) and `r` (read) property. If both are the same then set access to the string.

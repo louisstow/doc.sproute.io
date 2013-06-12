@@ -22,6 +22,15 @@ When first running your Sproute application you need to create an admin account.
 }
 ~~~
 
+### strict
+- default: `false`
+
+When set to `true`, data will only be inserted if it has been defined in the model. In production it is recommended to turn this on and properly define your models.
+
+~~~
+"strict": true
+~~~
+
 ### controller
 - default: `controller.json`
 
