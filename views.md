@@ -115,3 +115,22 @@ Required to close open tags such as `if` and `each`. You may put any text after 
 
 ### Escaping the tag
 If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&#103;`) or put a forwardslash before the tag `\{{`.
+
+## Default Variables
+When rendering a view, you have access to a variety of in-built variables.
+
+### params
+This object contains the placeholders specified from the [controller](/docs/controller).
+
+### query
+URLs can have query variables (e.g. `?queryOption=hi`). You can access this through the `query` object.
+
+### session
+The in-built user accounts are attached to the session object. You will mainly be using the user account at `session.user`. This contains the entire logged in user object. If the user is not logged-in this value will be empty.
+
+### self
+Assorted variables are contained in the `self` object.
+
+* `url`: The requested URL being rendered.
+* `dir`: Directory of the view being rendered.
+
