@@ -1,15 +1,15 @@
 # Permissions
 
-Sproute has user accounts built-in so security is simple. The basic concept is to specify what type of user can access which data. This is defined in a JSON file called `permissions.json`.
+Sproute has user accounts built-in so security is simple. You must create a [route](/docs/routes) and specify which user type can access that route. Users that do not match this type will be given an error.
 
-### User types
+### User Types
 
-The default user types are `admin` and `member`. You may extend this by creating a `users` [model](/docs/model) and creating a values array in order of superiority (see Heirarchy below).
+The default user types are `admin` and `member`. You may extend this by updating the `users` [model](/docs/model) and creating a values array in order of superiority (see Heirarchy below).
 
 There are other special in-built user types you may use when specifying permissions:
 
 * `admin`: At least one admin account exists when Sproute is first installed. This account is defined in the [config](/docs/config).
-* `owner`: Will ensure the [`_creator`](/docs/database#in-built-fields) matches the logged in user.
+* `owner`: Will ensure the [`_creator`](/docs/rest#in-built-fields) matches the logged in user.
 * `member`: Any logged in user.
 * `anyone`: No requirement.
 * `stranger`: Must *not* be logged in.
@@ -18,15 +18,3 @@ There are other special in-built user types you may use when specifying permissi
 
 All user types have a heirarchy of superiority. The default order is
 `admin > owner > member > anyone`. This means any permission you give to a user type is also given to user types above it.
-
-### permissions.json
-
-The permissions file is a JSON object where the key is the HTTP method + URL and the value is a user type. The URL is actually a [route](/docs/controller#Routes) so you can include wildcards to apply the permission to many URLs.
-
-~~~
-{
-	"POST /data/articles": "admin", //only admin can create an article
-	"POST /data/articles/*": "admin", //only admin can update an article
-	"GET /write": "admin" //only admin can view the write page
-}
-~~~

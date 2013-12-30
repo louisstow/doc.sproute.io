@@ -1,22 +1,22 @@
-# Database
+# HTTP Interface
 
-After defining your data in [models](/docs/model) you need to be able to interact and create the data. This is done through an HTTP interface.
+After defining your data in [models](/docs/models) you need to be able to interact and create the data. This is done through an HTTP interface.
 
-All URLs to access and modify collections are under the URL `/data/<collection>/`.
+All URLs to access and modify collections are under the URL `/data/<model>/`.
 
 ## GET
 
-### /data/&lt;collection&gt;
+### /data/&lt;model&gt;
 
-Retrieve all rows under the collection.
+Retrieve all rows under the model.
 
 ~~~
 GET /data/articles
 ~~~
 
-### /data/&lt;collection&gt;/&lt;field&gt;/&lt;value&gt;
+### /data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;
 
-Retrieve rows under a collection where the field matches the value.
+Retrieve rows under a model where the field matches the value.
 
 ~~~
 GET /data/articles/_id/5196eecb08e4860000000001
@@ -90,6 +90,7 @@ DELETE /data/articles/_id/5196eecb08e4860000000001
 
 Every row in a collection comes with useful fields.
 
+- `_id`: A unique value to each row.
 - `_created`: UNIX timestamp of when the row was created.
 - `_creator`: The ID of the user who created the row.
 - `_creatorName`: The username of the creator.

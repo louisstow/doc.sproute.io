@@ -1,20 +1,16 @@
 ## Introduction
 
-Welcome to the Sproute documentation. Before diving into the docs, be sure to sit back and watch the many **[tutorial videos](/videos)**. After watching a few episodes you'll be able to write the docs yourself.
-
-<p style="text-align: center; margin: 30px 0">
-<a href="/docs/install" class="button">Getting started and installation</a>
-</p>
+Welcome to the Sproute documentation. Before diving into the docs, be sure to watch some **[tutorial videos](/videos)**. After watching a few episodes you'll be able to write the docs yourself.
 
 ### Core Concepts
 
-1. [**Views**](/docs/views) are pages of HTML which may have template tags inside using the powerful template language.
+1. [**Pages**](/docs/pages) are pages of HTML which may have template tags inside using the powerful template language.
 
-2. [**Models**](/docs/model) are a definition of your data. You should define what type of data you expect for security reasons.
+2. [**Models**](/docs/models) are a definition of your data. You should define what type of data you expect for security reasons.
 
-3. [**Controller**](/docs/controller) is the mapping from requested URLs to views that should be rendered in the browser.
+3. [**Routes**](/docs/routes) is the mapping from requested URLs to views that should be rendered in the browser.
 
-### Data
+### Working with Data
 
 - [**HTTP interface**](/docs/database) is how you interact with data.
 
@@ -22,7 +18,7 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to si
 
 ### Tweaking
 
-- <p>[**Config**](/docs/config) lets you tweak settings about your website.</p>
+- <p>[**Config**](/docs/config) lets you tweak settings about your space.</p>
 
 ### Security
 

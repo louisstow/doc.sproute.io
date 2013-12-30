@@ -1,6 +1,6 @@
 # Pages
 
-A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables.
+A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables. To render a page you need a matching [route](/docs/routes) to point to the page.
 
 Template tags are wrapped with two curly braces starting with `{{` and ending with `}}`.
 

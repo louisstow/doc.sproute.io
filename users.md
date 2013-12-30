@@ -1,6 +1,6 @@
 # Users
 
-Sproute comes with User Accounts straight out of the box. To make use of them you should create some front-end HTML to send requests to the following end-points.
+Sproute comes with User Accounts straight out-of-the-box. To make use of them you should create some [pages](/docs/pages) to send requests to the following end-points.
 
 ### POST /api/login
 - `name`: Username of the account.
@@ -28,4 +28,21 @@ When specifying a role, you will only be allowed to use the lowest role (`member
 
 ### GET /api/logged
 
-Returns the object of the user logged or `false` if not logged in.
+Returns the object of the user logged or `false` if not logged in. Add the query parameter `?reload=true` to query the database if the user row has been updated.
+
+### POST /api/update
+- `pass`: User's current password.
+- `newpass`: Optional if updating user's password.
+
+Allow a user to update their password and other associated data. Must include their current password for security. 
+
+*Note: Updating the password through the HTTP interface will not correctly encrypt it.*
+
+### POST /api/forgot
+- `name`: User name of the forgotten account password.
+
+Send a recovery email to the `name` field assuming a valid email address. This will include a unique link valid for 2 hours. The link will take them to a special URL, `/api/recover` and will render any page named `forgot` with `newpass` available to render.
+
+## Session Storage
+
+The session is persisted through a cookie with `maxage` set to 0 or forever. This can only be destroyed through `/api/logout`.
