@@ -1,19 +1,19 @@
-# Views
+# Pages
 
-A view is an HTML page with tags to the internal template language. The template language is very powerful and allows you to request data, include subviews, evaluate expressions, set and render variables.
+A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables.
 
 Template tags are wrapped with two curly braces starting with `{{` and ending with `}}`.
 
-When you want to use a variable inside a tag, use either a colon at the start `:myVariable`, or wrap the variable in a dollar sign and two parenthesis `$(myVariable)`. Some tags will automatically evaluate the variable like `if` and `set`.
+When you want to evaluate a variable inside a tag, use either a colon at the start `:myVariable`, or wrap the variable in a dollar sign and two parenthesis `$(myVariable)`. Some tags will automatically evaluate the variable like `if` and `set`.
 
 ### {{ get &lt;url&gt; as &lt;variable&gt; }}
 - `url`: URL to retrieve data from the database.
 - `variable`: Save the data in the variable provided.
 
-Retrieve data from the database through the [HTTP interface](/docs/database#GET). The result is placed in the variable you provide after `as`.
+Retrieve data from the database through the [HTTP interface](/docs/rest#GET). The result is placed in the variable you provide after `as`.
 
 ~~~
-{{ get /data/articles/ as articles}}
+{{ get /data/articles/ as articles }}
 {{ each articles as article }}
 	<h1>{{article.title}}</h1>
 	{{article.body}}
@@ -47,6 +47,10 @@ Available operators:
 	<p>List of articles</p>
 {{ /if }}
 ~~~
+
+### {{ unless &lt;variable&gt; &lt;operator&gt; &lt;value&gt; }}
+
+Same as `if` but negated.
 
 ### {{ else }}
 Use this tag in conjuction with `if`. If the expression is not true, tags nested in the else will be evaluated instead.
@@ -84,9 +88,9 @@ See the [MathJS](http://mathjs.org) docs for more information about available op
 ### {{ include &lt;file&gt; }}
 - `file`: Include a text-file into the page.
 
-Include and evaluate another Sproute file. Can also be plain HTML. Will only search in the current directory (the views directory).
+Include and evaluate another page. Can also be plain HTML. Will only search in the current directory.
 
-`{{ #include }}` will do the same but will not evaluate the Sproute tags.
+`{{ #include }}` will do the same but will not evaluate the template tags.
 
 ~~~
 {{ include header.sprt }}
@@ -113,14 +117,34 @@ Required to close open tags such as `if` and `each`. You may put any text after 
 {{ /I can be anything }}
 ~~~
 
+### {{ redirect &lt;url&gt; }}
+- `url`: Path to redirect to.
+
+Will stop all processing of the page and redirect the user to the path specified.
+
+~~~
+{{ unless session.user }}
+	{{ redirect /login }}
+{{ / }}
+~~~
+
+### {{ debug &lt;variable&gt; }}
+- `variable`: Variable to print.
+
+Print all the properties and value on a variable. Runs `JSON.stringify` on the provided variable.
+
+~~~
+{{ debug self }}
+~~~
+
 ### Escaping the tag
 If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&#103;`) or put a forwardslash before the tag `\{{`.
 
-## Default Variables
-When rendering a view, you have access to a variety of in-built variables.
+## Global Variables
+When rendering a page, you have access to a variety of in-built variables.
 
 ### params
-This object contains the placeholders specified from the [controller](/docs/controller).
+This object contains the placeholders specified from the [routes](/docs/routes).
 
 ### query
 URLs can have query variables (e.g. `?queryOption=hi`). You can access this through the `query` object.
@@ -132,5 +156,6 @@ The in-built user accounts are attached to the session object. You will mainly b
 Assorted variables are contained in the `self` object.
 
 * `url`: The requested URL being rendered.
-* `dir`: Directory of the view being rendered.
+* `dir`: Directory of the page being rendered.
+* `name`: Name of the space.
 
