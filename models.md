@@ -18,15 +18,15 @@ Maximum length of the value if it is a string. Maximum value if a Number.
 
 ### Allowed Values
 
-If the field can only have very specific values, include them in this array. Whenever a field is updated or inserted it will ensure the value is one specified.
+If the field can only have a specific set of values, include them in this list seperated by spaces. Whenever a field is updated or inserted it will ensure the value is one of those specified.
 
 ### Default Value
 
-If the field is not required and doesn't have a value, use this default value.
+If the field is *not* required and *doesn't* have a value, use this default value.
 
 ### Required
 
-Ensure the field has a value upon insertion.
+Ensure the field has a value upon insertion or error.
 
 ### Unique
 
@@ -37,3 +37,16 @@ Ensure that no duplicate values of this field can exist in the model. This is us
 Allows you to specific which type of users can read or write the data in the field.
 
 User types are explained in more detail under [permissions](/docs/permissions).
+
+## Handling Errors
+
+If the data provided causes an error on the above properties, the request will not go through and will instead return a JSON list of errors. You may also render a page with the error object by specifying an error page in the [config](/docs/config#error-view).
+
+The returned object will be an array of error objects for each error that occured containing a `message` field explaining the issue.
+
+~~~
+[
+	{ "message": "Name: exceeded maximum length of 5 characters, got 9." },
+	{ "message": "Role: value (cheese) did not exist in [admin, member]." }
+]
+~~~
