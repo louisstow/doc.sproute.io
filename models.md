@@ -30,7 +30,7 @@ Ensure the field has a value upon insertion.
 
 ### Unique
 
-Ensure that no duplicate values of this field can exist in the collection. This is useful for things like usernames where a user must have a unique name.
+Ensure that no duplicate values of this field can exist in the model. This is useful for things like usernames where a user must have a unique name.
 
 ### Read/Write Access
 

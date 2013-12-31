@@ -4,24 +4,18 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to wa
 
 ### Core Concepts
 
-1. [**Pages**](/docs/pages) are pages of HTML which may have template tags inside using the powerful template language.
+1. [**Pages**](/docs/pages) are HTML files which may have template tags inside using the powerful template language.
 
 2. [**Models**](/docs/models) are a definition of your data. You should define what type of data you expect for security reasons.
 
 3. [**Routes**](/docs/routes) is the mapping from requested URLs to views that should be rendered in the browser.
 
+4. [**Permissions**](/docs/permissions) let you decide what kind of users can access what parts of the space.
+
 ### Working with Data
 
-- [**HTTP interface**](/docs/database) is how you interact with data.
+- [**HTTP interface**](/docs/rest) is how you interact with data. Also known as REST.
 
-- [**Users**](/docs/users) are built into Sproute applications.
+- [**Users**](/docs/users) are built into Sproute spaces that allow logins and registering.
 
-### Tweaking
-
-- <p>[**Config**](/docs/config) lets you tweak settings about your space.</p>
-
-### Security
-
-- [**Permissions**](/docs/permissions) let you decide what kind of users can access what parts of the website, be it pages, rows of data and even fields of data.
-
-- [**Access property**](/docs/model#access) on models definitions.
+- [**Config**](/docs/config) settings for your space.

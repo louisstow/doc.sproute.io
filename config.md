@@ -2,95 +2,34 @@
 
 Sproute uses a `JSON` file named `config.json` to configure any settings or options you need to tweak. Out of the box, you will not need to configure many of these values.
 
-### name
+### Error View
 
-This is the only required field in the config. It is used to create the database in Mongo. It should contain no spaces.
-
-~~~
-"name": "MyApp"
-~~~
-
-### admin
-- default: `{ name: 'admin', pass: 'admin' }`
-
-When first running your Sproute application you need to create an admin account. This is done by specifying the details under an admin key. Once the app is first started, you **should remove** this key as it poses a security risk.
+When an error occurs render a custom page instead of the default JSON response. The page will have a list of error messages under `error`.
 
 ~~~
-"admin": {
-	"name": "louis",
-	"pass": "my strong password"
-}
+{{ each error as e }}
+	<div>{{e.message}}</div>
+{{ / }}
 ~~~
 
-### strict
-- default: `false`
+### Anti CSRF
 
-When set to `true`, data will only be inserted if it has been defined in the model. In production it is recommended to turn this on and properly define your models.
-
-~~~
-"strict": true
-~~~
-
-### controller
-- default: `controller.json`
-
-Relative path to the controller file.
+To prevent an attack known as Cross-Site Request Forgery. A unique token will be generate for each user and stored in the session date under the key `_csrf`. Any non-GET request to the server will require the token in the request body.
 
 ~~~
-"controller": "controller.json"
+<input type='hidden' name='_csrf' value='{{session._csrf}}' />
 ~~~
 
-### views
-- default: `views/`
+### reCAPTCHA
 
-Relative path to the directory of view files.
+To implement a CAPTCHA you can use [reCAPTCHA](https://www.google.com/recaptcha/admin/create) by setting up a public and private key.
 
-~~~
-"views": "viewsDir/"
-~~~
-
-### models
-- default: `models/`
-
-Relative path to the directory of view files.
+Put the private key in the config then to use a CAPTCHA in a form, use the template tag:
 
 ~~~
-"models": "modelsDir/"
+{{ captcha <public key> }}
 ~~~
 
-### port
-- default: `8000`
+### Rate Limit
 
-The port to server the website from.
-
-~~~
-"port": 8080
-~~~
-
-### extension
-- default: `sprt`
-
-File extension for view files. This can be any extensions.
-
-~~~
-"extension": "html"
-~~~
-
-### static
-- default: `public`
-
-Relative path to a directory containing all static asset such as images, JavaScrip source files, CSS stylesheet.
-
-~~~
-"static": "assets"
-~~~
-
-### cacheViews
-- default: `false`
-
-When requesting a view, reload the view each time. This is helpful for debugging so you don't need to restart the server whenever a view changes. Set to `true` in production for faster page serving.
-
-### secret
-- default: `<app name>`
-
-A unique value for encrypting session cookies.
+To avoid spamming on your space, you can set a rate limit in seconds to prevent frequent POST requests.

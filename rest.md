@@ -2,7 +2,7 @@
 
 After defining your data in [models](/docs/models) you need to be able to interact and create the data. This is done through an HTTP interface.
 
-All URLs to access and modify collections are under the URL `/data/<model>/`.
+All URLs to access and modify models are under the URL `/data/<model>/`.
 
 ## GET
 
@@ -28,13 +28,13 @@ GET /data/articles/_id/5196eecb08e4860000000001
 
 - `?sort=field[,asc|desc]`: Sort the results based on a field in ascending or descending order (defaults to ascending).
 
-- `?single=boolean`: If one result is returned, return the object instead of a single element array.
+- `?single=true`: If one result is returned, return the object instead of a single element array.
 
 ## POST
 
-### /data/&lt;collection&gt;
+### /data/&lt;model&gt;
 
-Insert a new row into a collection. The body of the POST request can be formatted in JSON or standard form data.
+Insert a new row into a model. The body of the POST request can be formatted in JSON or standard form data.
 
 ~~~
 POST /data/articles/
@@ -42,16 +42,16 @@ POST /data/articles/
 title=New%20post&category=news&body=This%20is%20the%20content
 ~~~
 
-### /data/&lt;collection&gt;/&lt;field&gt;/&lt;value&gt;
+### /data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;
 
-Update existing data in a collection.
+Update existing data in a model.
 
 ~~~
 POST /data/articles/_id/5196eecb08e4860000000001
 {category: "tech"}
 ~~~
 
-### /data/&lt;collection&gt;/&lt;field&gt;/&lt;value&gt;/inc
+### /data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;/inc
 
 Increment a numerical field. The body should have the field to increment as the key and the difference as the value. Can be a negative number to decrement.
 
@@ -62,19 +62,19 @@ POST /data/articles/_id/5196eecb08e4860000000001/inc
 
 ### Query Options:
 
-- `?goto=url`: After the POST redirect the location to a page.
+- `?goto=url`: After the POST redirect to a URL.
 
 ## DELETE
 
-### /data/&lt;collection&gt;
+### /data/&lt;model&gt;
 
-Remove an entire collection. Be very careful with this!
+Remove an entire model. Be very careful with this!
 
 ~~~
 DELETE /data/articles/
 ~~~
 
-### /data/&lt;collection&gt;/&lt;field&gt;/&lt;value&gt;
+### /data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;
 
 Remove all rows where the field matches the value.
 
@@ -84,11 +84,11 @@ DELETE /data/articles/_id/5196eecb08e4860000000001
 
 ### Query Options:
 
-- `?goto=url`: After the POST redirect the location to a page.
+- `?goto=url`: After the DELETE redirect to a URL.
 
 ## In-built fields
 
-Every row in a collection comes with useful fields.
+Every row in a model comes with useful fields.
 
 - `_id`: A unique value to each row.
 - `_created`: UNIX timestamp of when the row was created.

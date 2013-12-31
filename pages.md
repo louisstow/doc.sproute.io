@@ -85,6 +85,12 @@ See the [MathJS](http://mathjs.org) docs for more information about available op
 {{ expr :article.thumbsUp - :article.thumbsDown }}
 ~~~
 
+### {{ date &lt;variable&gt; &lt;format&gt; }}
+- `variable`: The date to format.
+- `format`: A special string to format a date
+
+Uses the [DateFormat](https://github.com/felixge/node-dateformat) library to take a UNIX timestamp and format it.
+
 ### {{ include &lt;file&gt; }}
 - `file`: Include a text-file into the page.
 
@@ -138,7 +144,7 @@ Print all the properties and value on a variable. Runs `JSON.stringify` on the p
 ~~~
 
 ### Escaping the tag
-If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&#103;`) or put a forwardslash before the tag `\{{`.
+If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&#123;`) or put a forwardslash before the tag `\{{`.
 
 ## Global Variables
 When rendering a page, you have access to a variety of in-built variables.
