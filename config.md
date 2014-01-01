@@ -33,3 +33,7 @@ Put the private key in the config then to use a CAPTCHA in a form, use the templ
 ### Rate Limit
 
 To avoid spamming on your space, you can set a rate limit in seconds to prevent frequent POST requests.
+
+### URL
+
+When using a custom domain, put the full URL here for any links that need to point to the space such as password recovery emails. Make sure to leave off a trailing backslash `/`.
