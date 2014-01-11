@@ -163,6 +163,15 @@ Print all the properties and value on a variable. Runs `JSON.stringify` on the p
 {{ debug self }}
 ~~~
 
+### {{ error &lt;message&gt; }}
+- `message`: Error message to display.
+
+Stop processing the page and respond to the user with a `500` code and a JSON string of the error. You can render a page instead of a JSON string by changing the Error View to an error page in Config. 
+
+~~~
+{{ error Page could not be displayed }}
+~~~
+
 ### Escaping the tag
 If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&#123;`) or put a forwardslash before the tag `\{{`.
 
