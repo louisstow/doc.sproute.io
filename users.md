@@ -41,7 +41,7 @@ Allow a user to update their password and other associated data. Must include th
 ### POST /api/forgot
 - `name`: User name of the forgotten account password.
 
-Send a recovery email to the `name` field assuming a valid email address. This will include a unique link valid for 2 hours. The link will take them to a special URL, `/api/recover` and will render any page named `forgot` with `newpass` available to render.
+Send a recovery email to the `name` field assuming a valid email address. This will include a unique link valid for 2 hours. The link will take them to a special URL, `/api/recover` and will render any page named `recover` with the variable `newpass`.
 
 ## Session Storage
 

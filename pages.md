@@ -20,11 +20,27 @@ Retrieve data from the database through the [HTTP interface](/docs/rest#GET). Th
 {{ /each }}
 ~~~
 
+### {{ post &lt;url&gt; &lt;data&gt; &lt;role&gt; as &lt;variable&gt; }}
+- `url`: URL to store data in the database.
+- `data`: Name of the object variable with the data to store.
+- `role`: Role of the user making the POST request.
+- `variable`: Save the response in the variable provided.
+
+Store data in the database through the [HTTP interface](/docs/rest#POST). The result is placed in the variable you provide after `as`.
+
+With this tag you may modify data that the logged in user would otherwise not have permission to complete. This is useful for creating pages that require special logic or processing before storing the data.
+
+~~~
+{{ set data.title Hello }}
+{{ set data.body Goodbye }}
+{{ post /data/articles/ data admin as articles }}
+~~~
+
 ### {{ each &lt;collection&gt; as &lt;variable&gt; }}
 - `collection`: List of data to iterate through.
 - `variable`: Name of the variable containing each item.
 
-Iterate over a list of data. Usually you will use this with the `get` tag which will retrieve the data.
+Iterate over a list of data. Usually you will use this with the `get` tag which will retrieve the data as a list. Everything inside the `each` block will be repeated for each of the elements in the collection.
 
 ### {{ if &lt;variable&gt; &lt;operator&gt; &lt;value&gt; }}
 - `variable`: Variable to test.
@@ -67,11 +83,15 @@ Use this tag in conjuction with `if`. If the expression is not true, tags nested
 - `variable`: Variable to set a value.
 - `value`: Value to set the variable to.
 
-Set a variable to a value.
+Set a variable to a value. If the variable contains a dot `.` the name before the dot will be turned into an object with whatever property comes after the dot.
 
 ~~~
 {{ set pageTitle This is the title of my website }}
 <title>{{pageTitle}}</title>
+
+{{ set obj.property value }}
+{{ set obj.a.very.deep.property hi }}
+{{ debug obj }}
 ~~~
 
 ### {{ expr &lt;expr&gt; }}
@@ -155,6 +175,23 @@ This object contains the placeholders specified from the [routes](/docs/routes).
 ### query
 URLs can have query variables (e.g. `?queryOption=hi`). You can access this through the `query` object.
 
+~~~
+{{ query.name }}
+~~~
+
+*Alias: `$_GET`*
+
+### form
+Pages can have data posted to it. This post data is found under the `form` object.
+
+~~~
+{{ if form }}
+	{{ debug form }}
+{{ / }}
+~~~
+
+*Alias: `$_POST`*
+
 ### session
 The in-built user accounts are attached to the session object. You will mainly be using the user account at `session.user`. This contains the entire logged in user object. If the user is not logged-in this value will be empty.
 
@@ -164,4 +201,4 @@ Assorted variables are contained in the `self` object.
 * `url`: The requested URL being rendered.
 * `dir`: Directory of the page being rendered.
 * `name`: Name of the space.
-
+* `method`: HTTP method making the request.
