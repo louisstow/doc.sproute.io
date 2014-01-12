@@ -6,6 +6,7 @@ Template tags are wrapped with two curly braces starting with `{{` and ending wi
 
 When you want to evaluate a variable inside a tag, use either a colon at the start `:myVariable`, or wrap the variable in a dollar sign and two parenthesis `$(myVariable)`. Some tags will automatically evaluate the variable like `if` and `set`.
 
+## Tags
 ### {{ get &lt;url&gt; as &lt;variable&gt; }}
 - `url`: URL to retrieve data from the database.
 - `variable`: Save the data in the variable provided.

@@ -4,6 +4,7 @@ Most web applications need persistant data to store things like users, articles,
 
 The way data is stored in Sproute applications is similar to a relational database. You have a **model** which is similar to a table. Inside a model there are **fields**. A field has some properties to ensure data integrity.
 
+## Properties
 ### Type
 
 Use this to ensure the type of the data in the field. Available values are `String`, `Boolean` and `Number`.

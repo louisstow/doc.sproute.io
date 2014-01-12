@@ -2,6 +2,7 @@
 
 Sproute comes with User Accounts straight out-of-the-box. To make use of them you should create some [pages](/docs/pages) to send requests to the following end-points.
 
+## Endpoints
 ### POST /api/login
 - `name`: Username of the account.
 - `pass`: Password of the account.
