@@ -6,6 +6,8 @@ Sproute uses a `JSON` file named `config.json` to configure any settings or opti
 
 When an error occurs render a custom page instead of the default JSON response. The page will have a list of error messages under `error`.
 
+To force an API to return JSON instead of the rendered error page, submit the request with an `Accept` header of `application/json` or `application/javascript`.
+
 ~~~
 {{ each error as e }}
 	<div>{{e.message}}</div>
