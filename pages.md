@@ -84,14 +84,15 @@ Use this tag in conjuction with `if`. If the expression is not true, tags nested
 - `variable`: Variable to set a value.
 - `value`: Value to set the variable to.
 
-Set a variable to a value. If the variable contains a dot `.` the name before the dot will be turned into an object with whatever property comes after the dot.
+Set a variable to a value. If the variable contains a dot `.` the name before the dot will be turned into an object with whatever property comes after the dot. If the property name needs to contain a dot, you can wrap the name in double-quotes.
 
 ~~~
 {{ set pageTitle This is the title of my website }}
 <title>{{pageTitle}}</title>
 
-{{ set obj.property value }}
-{{ set obj.a.very.deep.property hi }}
+{{ set obj.property 1 }}
+{{ set obj.a.very.deep.property 2 }}
+{{ set obj."property.with.dot" 3 }}
 {{ debug obj }}
 ~~~
 
@@ -106,11 +107,17 @@ See the [MathJS](http://mathjs.org) docs for more information about available op
 {{ expr :article.thumbsUp - :article.thumbsDown }}
 ~~~
 
-### {{ date &lt;variable&gt; &lt;format&gt; }}
-- `variable`: The date to format.
+### {{ date &lt;date&gt; &lt;format&gt; }}
+- `date`: The date to format in UNIX timestamp form.
 - `format`: A special string to format a date
 
-Uses the [DateFormat](https://github.com/felixge/node-dateformat) library to take a UNIX timestamp and format it.
+Uses the [DateFormat](https://github.com/felixge/node-dateformat) library to take a UNIX timestamp and format it. Every row in a model has a `_created` field that can be formatted.
+
+~~~
+{{ each rows as row }}
+	{{ date :row._created H:MMtt }}
+{{ / }}
+~~~
 
 ### {{ include &lt;file&gt; }}
 - `file`: Include a text-file into the page.
