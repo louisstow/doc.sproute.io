@@ -4,14 +4,19 @@ A page is an HTML file with template tags. The template language allows you to r
 
 Template tags are wrapped with two curly braces starting with `{{` and ending with `}}`.
 
-When you want to evaluate a variable inside a tag, use either a colon at the start `:myVariable`, or wrap the variable in a dollar sign and two parenthesis `$(myVariable)`. Some tags will automatically evaluate the variable like `if` and `set`.
+When you want to evaluate a variable inside a tag, use either a colon at the start `:myVariable`, or wrap the variable in a dollar sign and two parenthesis `$(myVariable)`. Some tags will automatically evaluate the variable like `if` and `set` or when documented as `<variable>`.
 
 ## Tags
-### {{ get &lt;url&gt; as &lt;variable&gt; }}
+### {{ get &lt;url&gt; [&lt;role&gt;] as &lt;variable&gt; }}
 - `url`: URL to retrieve data from the database.
+- `role`: Role of the user to make the GET request as (optional).
 - `variable`: Save the data in the variable provided.
 
 Retrieve data from the database through the [HTTP interface](/docs/rest#GET). The result is placed in the variable you provide after `as`.
+
+You may optionally provide a [user type](/docs/permissions#user-types) to make the request as a different role if the logged in user would otherwise not be able to complete.
+
+*Note: This will not work for every URL, only paths to the [HTTP interface](/docs/rest).*
 
 ~~~
 {{ get /data/articles/ as articles }}
@@ -21,15 +26,17 @@ Retrieve data from the database through the [HTTP interface](/docs/rest#GET). Th
 {{ /each }}
 ~~~
 
-### {{ post &lt;url&gt; &lt;data&gt; &lt;role&gt; as &lt;variable&gt; }}
+### {{ post &lt;url&gt; &lt;data&gt; [&lt;role&gt;] as &lt;variable&gt; }}
 - `url`: URL to store data in the database.
 - `data`: Name of the object variable with the data to store.
-- `role`: Role of the user making the POST request.
+- `role`: Role of the user to make the GET request as (optional).
 - `variable`: Save the response in the variable provided.
 
 Store data in the database through the [HTTP interface](/docs/rest#POST). The result is placed in the variable you provide after `as`.
 
-With this tag you may modify data that the logged in user would otherwise not have permission to complete. This is useful for creating pages that require special logic or processing before storing the data.
+With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a [user type](/docs/permissions#user-types). This is useful for creating pages that require special logic or processing before storing the data.
+
+*Note: This will not work for every URL, only paths to the [HTTP interface](/docs/rest).*
 
 ~~~
 {{ set data.title Hello }}
@@ -178,6 +185,18 @@ Stop processing the page and respond to the user with a `500` code and a JSON st
 
 ~~~
 {{ error Page could not be displayed }}
+~~~
+
+### {{ json &lt;variable&gt; }}
+- `variable`: Variable to respond as JSON.
+
+Stop processing the page and respond to the user with a JSON string of the variable passed. Will serve with Content-Type `application/json`.
+
+~~~
+{{ set myobj.x 1 }}
+{{ set myobj.y 2 }}
+{{ set myobj.z 3 }}
+{{ json myobj }}
 ~~~
 
 ### Escaping the tag
