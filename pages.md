@@ -118,12 +118,21 @@ See the [MathJS](http://mathjs.org) docs for more information about available op
 - `date`: The date to format in UNIX timestamp form.
 - `format`: A special string to format a date
 
-Uses the [DateFormat](https://github.com/felixge/node-dateformat) library to take a UNIX timestamp and format it. Every row in a model has a `_created` field that can be formatted.
+Uses the [Moment](http://momentjs.com/docs/#/displaying/format/) library to take a UNIX timestamp and format it. Every row in a model has a `_created` field that can be formatted.
 
 ~~~
 {{ each rows as row }}
-	{{ date :row._created H:MMtt }}
+	{{ date :row._created h:mma }}
 {{ / }}
+~~~
+
+### {{ ago &lt;date&gt; }}
+- `date`: The date as a UNIX timestamp.
+
+Returns a text representation of the time elapsed from now. Read more in the [Moment docs](http://momentjs.com/docs/#/displaying/fromnow/).
+
+~~~
+{{ ago :row._created }}
 ~~~
 
 ### {{ include &lt;file&gt; }}
@@ -172,7 +181,7 @@ Will stop all processing of the page and redirect the user to the path specified
 ### {{ debug &lt;variable&gt; }}
 - `variable`: Variable to print.
 
-Print all the properties and value on a variable. Runs `JSON.stringify` on the provided variable.
+Print all the properties and values on a variable. Runs `JSON.stringify` on the provided variable and wraps it in `<pre>` tags.
 
 ~~~
 {{ debug self }}
@@ -200,7 +209,7 @@ Stop processing the page and respond to the user with a JSON string of the varia
 ~~~
 
 ### Escaping the tag
-If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&#123;`) or put a forwardslash before the tag `\{{`.
+If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&amp;#123;`) or put a forwardslash before the tag `\{{`.
 
 ## Global Variables
 When rendering a page, you have access to a variety of in-built variables.

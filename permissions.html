@@ -1,0 +1,14 @@
+<h1 id="permissions">Permissions</h1>
+<p>Sproute has user accounts built-in so security is simple. You must create a <a href="/docs/routes">route</a> and specify which user type can access that route. Users that do not match this type will be given an error.</p>
+<h3 id="user-types">User Types</h3>
+<p>The default user types are <code>admin</code> and <code>member</code>. You may extend this by updating the <code>users</code> <a href="/docs/models">model</a> and creating a values array in order of superiority (see Heirarchy below).</p>
+<p>There are other special in-built user types you may use when specifying permissions:</p>
+<ul>
+<li><code>admin</code>: At least one admin account exists when Sproute is first installed. This account is defined in the <a href="/docs/config">config</a>.</li>
+<li><code>owner</code>: Will ensure the <a href="/docs/rest#in-built-fields"><code>_creator</code></a> matches the logged in user.</li>
+<li><code>member</code>: Any logged in user.</li>
+<li><code>anyone</code>: No requirement.</li>
+<li><code>stranger</code>: Must <em>not</em> be logged in.</li>
+</ul>
+<h3 id="heirarchy">Heirarchy</h3>
+<p>All user types have a heirarchy of superiority. The default order is <code>admin &gt; owner &gt; member &gt; anyone</code>. This means any permission you give to a user type is also given to user types above it.</p>

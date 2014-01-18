@@ -1,0 +1,28 @@
+<h1 id="models">Models</h1>
+<p>Most web applications need persistant data to store things like users, articles, status updates or messages. Sproute makes that incredibly simple. All data is created and retrieved through an <a href="/docs/rest">HTTP interface</a>, better known as REST.</p>
+<p>The way data is stored in Sproute applications is similar to a relational database. You have a <strong>model</strong> which is similar to a table. Inside a model there are <strong>fields</strong>. A field has some properties to ensure data integrity.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="type">Type</h3>
+<p>Use this to ensure the type of the data in the field. Available values are <code>String</code>, <code>Boolean</code> and <code>Number</code>.</p>
+<h3 id="min">Min</h3>
+<p>Minimum length of the value if it is a string. Minimum value if a Number.</p>
+<h3 id="max">Max</h3>
+<p>Maximum length of the value if it is a string. Maximum value if a Number.</p>
+<h3 id="allowed-values">Allowed Values</h3>
+<p>If the field can only have a specific set of values, include them in this list seperated by spaces. Whenever a field is updated or inserted it will ensure the value is one of those specified.</p>
+<h3 id="default-value">Default Value</h3>
+<p>If the field is <em>not</em> required and <em>doesn't</em> have a value, use this default value.</p>
+<h3 id="required">Required</h3>
+<p>Ensure the field has a value upon insertion or error.</p>
+<h3 id="unique">Unique</h3>
+<p>Ensure that no duplicate values of this field can exist in the model. This is useful for things like usernames where a user must have a unique name.</p>
+<h3 id="readwrite-access">Read/Write Access</h3>
+<p>Allows you to specific which type of users can read or write the data in the field.</p>
+<p>User types are explained in more detail under <a href="/docs/permissions">permissions</a>.</p>
+<h2 id="handling-errors">Handling Errors</h2>
+<p>If the data provided causes an error on the above properties, the request will not go through and will instead return a JSON list of errors. You may also render a page with the error object by specifying an error page in the <a href="/docs/config#error-view">config</a>.</p>
+<p>The returned object will be an array of error objects for each error that occured containing a <code>message</code> field explaining the issue.</p>
+<pre><code>[
+    { &quot;message&quot;: &quot;Name: exceeded maximum length of 5 characters, got 9.&quot; },
+    { &quot;message&quot;: &quot;Role: value (cheese) did not exist in [admin, member].&quot; }
+]</code></pre>
