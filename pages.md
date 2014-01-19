@@ -237,6 +237,15 @@ Pages can have data posted to it. This post data is found under the `form` objec
 
 *Alias: `$_POST`*
 
+### headers
+All the request headers sent to the page in lower-case.
+
+~~~
+{{ if headers.referer }}
+	{{ redirect :headers.referer }}
+{{ / }}
+~~~
+
 ### session
 The in-built user accounts are attached to the session object. You will mainly be using the user account at `session.user`. This contains the entire logged in user object. If the user is not logged-in this value will be empty.
 

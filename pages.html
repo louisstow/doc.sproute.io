@@ -162,6 +162,11 @@
     {{ debug form }}
 {{ / }}</code></pre>
 <p><em>Alias: <code>$_POST</code></em></p>
+<h3 id="headers">headers</h3>
+<p>All the request headers sent to the page in lower-case.</p>
+<pre><code>{{ if headers.referer }}
+    {{ redirect :headers.referer }}
+{{ / }}</code></pre>
 <h3 id="session">session</h3>
 <p>The in-built user accounts are attached to the session object. You will mainly be using the user account at <code>session.user</code>. This contains the entire logged in user object. If the user is not logged-in this value will be empty.</p>
 <h3 id="self">self</h3>
