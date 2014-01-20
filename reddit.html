@@ -1,6 +1,7 @@
 <h1 id="building-a-reddit-clone-in-sproute">Building a Reddit-clone in Sproute</h1>
 <p><a href="http://reddit.com">Reddit</a> is a link-sharing website with users, categories and a voting system to decide which links should be displayed first.</p>
 <p>The first thing we should do is identify the dynamic data then define the model that will store the links. The model will need to store the title, the destination link, the subreddit (or category) and how many votes the link has received. Every other field will be created for us through the <a href="/docs/rest#in-built-fields">in-built fields</a>.</p>
+<h2 id="models">Models</h2>
 <p>Create a model called <code>links</code> and create the following fields and properties:</p>
 <ul>
 <li><code>title</code>: Text, Required</li>
@@ -9,6 +10,7 @@
 <li><code>vote</code>: Number, Default Value: 0, Write Access: admin</li>
 </ul>
 <p>You may add more restrictions if you like such as minimum and maximum lengths. The vote must not be writeable except for admins, the highest <a href="/docs/permissions#user-types">user type</a>, otherwise users could change the value of their vote.</p>
+<h2 id="pages">Pages</h2>
 <p>Now we need a Page to render this data. Pages are just HTML pages that can be extended with the <a href="/docs/pages">Sproute template language</a>. Click on <em>Pages</em> and you will see: header, footer and index. <em>index</em> is the home page. <em>header</em> and <em>footer</em> are pages that will keep a consistent theme by including them in every visible page.</p>
 <p>Reddit has a list of the top links from every subreddit (or category) on the front page. We can request this data from the model using a template tag.</p>
 <pre><code>{{ get /data/links as links }}</code></pre>
@@ -57,6 +59,7 @@
 &lt;/form&gt;</code></pre>
 <p>This is just a basic HTML form. The magic happens in <code>/api/login</code> which is an internal endpoint to create a session for a <a href="/docs/users">user</a> and give them <a href="/docs/permissions">access</a> to parts of your application. The query option <code>goto</code> will redirect the user to a URL, in this case index.</p>
 <p>You may do the same for register but change the action endpoint from <code>/api/login</code> to <code>/api/register</code>.</p>
+<h2 id="routes">Routes</h2>
 <p>One thing you might have noticed by now is that this page is not yet accessible from the browser. This is because we need to define a Route to match a URL to a Page.</p>
 <p>Click on <code>Route</code> to see the current routes. There should be one where <code>/</code> will point to <code>index</code>. Create a route for login where the Route is <code>/login</code> and the page is <code>login</code> (listed in the select menu). Do the same for register.</p>
 <p>The reason you must use Routes is because applications can have complex URLs that don't always match up exactly to a page. An example in this reddit clone is subreddits where the URL <code>/r/&lt;subreddit&gt;</code> will point to a special page. We will cover this later in the guide.</p>
@@ -82,6 +85,7 @@
     {{ redirect /login }}
 {{ / }}</code></pre>
 <p>This will perform some logic so if the <code>session.user</code> variable is empty, redirect the user to the <code>/login</code> route.</p>
+<h2 id="permissions">Permissions</h2>
 <p>The other option is through Permissions. Click <code>Permissions</code> to see a list of default permissions. You will see some <a href="/docs/routes">complex routes</a> and a required <a href="/docs/permissions#user-types">user type</a>. This will perform a check at the very start of the request to see if the current user meets the minimum required user type.</p>
 <p>We can add our own permission for the route <code>/submit</code> that requires the minimum user type to be <code>Member</code>. If the user does not meet this requirement they will be given an error message formatted in JSON. You should also use <code>* ALL</code> for the method as this corresponds to HTTP method and routes will respond to a GET <em>and</em> POST requests.</p>
 <p>The other permissions provide some default security that prevents just anyone from deleting or modifying data unless they are the owner or an admin. However you may change these permissions to your digression.</p>
@@ -91,6 +95,7 @@
 <p>This will filter the results based on the <code>subreddit</code> field in the model where the value is equal to <code>:params.name</code>. Let's create the route before explaining the <code>params</code> object.</p>
 <p>Create a route to point to the subreddit page with the following pattern: <code>/r/:name</code>. This will match all URLs beginning with <code>/r/</code> and store the value of <code>name</code> as a property on <code>params</code> in the page. This explains <code>:params.name</code>; whatever value is passed into the URL will be matched and stored in <code>params.name</code>.</p>
 <p>The biggest feature we left out is voting! How does a user vote on a link? We added a restriction where only admins can write to the <code>vote</code> field. Therefore we need a special page that will allow us to run logic before modifying the data and do so with any role we choose (specifically admin).</p>
+<h2 id="complex-pages">Complex Pages</h2>
 <p>Create a page called <code>vote</code> and the following route: <code>/vote/:id/:vote</code>. Then we are able to send the unique link identifier and the user vote, either <code>up</code> or <code>down</code> (e.g. <code>/vote/v0c670w79gxecdi/up</code>).</p>
 <p>Before we start writing the template logic to increment the vote, we need a way to validate if the user has voted before so they cannot vote multiple times. This can be implemented with a model that will store the link identifier and user identifier along with their vote. That way we can detect if the user has already voted on a link.</p>
 <p>Create a Model called <code>votes</code> with the following fields:</p>
@@ -117,7 +122,7 @@
     {{ set obj.vote :params.vote }}
 
     {{ post /data/votes/ obj admin as resp }}
-    {{ post /data/link/_id/:params.id/inc inc admin }}
+    {{ post /data/links/_id/:params.id/inc inc admin }}
     ok
 {{ / }}</code></pre>
 <p>... Let me explain.</p>

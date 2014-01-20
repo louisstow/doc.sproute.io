@@ -4,6 +4,7 @@
 
 The first thing we should do is identify the dynamic data then define the model that will store the links. The model will need to store the title, the destination link, the subreddit (or category) and how many votes the link has received. Every other field will be created for us through the [in-built fields](/docs/rest#in-built-fields).
 
+## Models
 Create a model called `links` and create the following fields and properties:
 
 - `title`: Text, Required
@@ -13,6 +14,7 @@ Create a model called `links` and create the following fields and properties:
 
 You may add more restrictions if you like such as minimum and maximum lengths. The vote must not be writeable except for admins, the highest [user type](/docs/permissions#user-types), otherwise users could change the value of their vote.
 
+## Pages
 Now we need a Page to render this data. Pages are just HTML pages that can be extended with the [Sproute template language](/docs/pages). Click on *Pages* and you will see: header, footer and index. *index* is the home page. *header* and *footer* are pages that will keep a consistent theme by including them in every visible page.
 
 Reddit has a list of the top links from every subreddit (or category) on the front page. We can request this data from the model using a template tag.
@@ -80,6 +82,7 @@ This is just a basic HTML form. The magic happens in `/api/login` which is an in
 
 You may do the same for register but change the action endpoint from `/api/login` to `/api/register`.
 
+## Routes
 One thing you might have noticed by now is that this page is not yet accessible from the browser. This is because we need to define a Route to match a URL to a Page.
 
 Click on `Route` to see the current routes. There should be one where `/` will point to `index`. Create a route for login where the Route is `/login` and the page is `login` (listed in the select menu). Do the same for register.
@@ -114,6 +117,7 @@ You might have noticed this page can be accessible by users that aren't logged i
 
 This will perform some logic so if the `session.user` variable is empty, redirect the user to the `/login` route.
 
+## Permissions
 The other option is through Permissions. Click `Permissions` to see a list of default permissions. You will see some [complex routes](/docs/routes) and a required [user type](/docs/permissions#user-types). This will perform a check at the very start of the request to see if the current user meets the minimum required user type.
 
 We can add our own permission for the route `/submit` that requires the minimum user type to be `Member`. If the user does not meet this requirement they will be given an error message formatted in JSON. You should also use `* ALL` for the method as this corresponds to HTTP method and routes will respond to a GET *and* POST requests.
@@ -132,6 +136,7 @@ Create a route to point to the subreddit page with the following pattern: `/r/:n
 
 The biggest feature we left out is voting! How does a user vote on a link? We added a restriction where only admins can write to the `vote` field. Therefore we need a special page that will allow us to run logic before modifying the data and do so with any role we choose (specifically admin).
 
+## Complex Pages
 Create a page called `vote` and the following route: `/vote/:id/:vote`. Then we are able to send the unique link identifier and the user vote, either `up` or `down` (e.g. `/vote/v0c670w79gxecdi/up`).
 
 Before we start writing the template logic to increment the vote, we need a way to validate if the user has voted before so they cannot vote multiple times. This can be implemented with a model that will store the link identifier and user identifier along with their vote. That way we can detect if the user has already voted on a link.
@@ -162,7 +167,7 @@ Now back to the `vote` page. Add the following code:
         {{ set obj.vote :params.vote }}
 
         {{ post /data/votes/ obj admin as resp }}
-        {{ post /data/link/_id/:params.id/inc inc admin }}
+        {{ post /data/links/_id/:params.id/inc inc admin }}
         ok
     {{ / }}
 
