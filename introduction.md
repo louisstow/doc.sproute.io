@@ -17,3 +17,7 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to wa
 - [**Users**](/docs/users) are built into Sproute spaces that allow logins and registering.
 
 - [**Config**](/docs/config) settings for your space.
+
+### Guides
+
+- [**Reddit**](/docs/reddit) clone from scratch. Very good beginners guide.
