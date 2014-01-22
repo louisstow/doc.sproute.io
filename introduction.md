@@ -1,4 +1,4 @@
-Welcome to the Sproute documentation. Before diving into the docs, be sure to watch some **[tutorial videos](/videos)**. After watching a few episodes you'll be able to write the docs yourself.
+Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a [reddit-like](/docs/reddit) webapp.
 
 ### Core Concepts
 
@@ -22,4 +22,4 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to wa
 
 - [**Reddit**](/docs/reddit) clone from scratch. Very good beginners guide.
 
-- [*Firefox OS*](/docs/firefoxos) support for building mobile hosted and packaged apps.
+- [**Firefox OS**](/docs/firefoxos) support for building mobile hosted and packaged apps.
