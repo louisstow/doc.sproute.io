@@ -21,3 +21,5 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to wa
 ### Guides
 
 - [**Reddit**](/docs/reddit) clone from scratch. Very good beginners guide.
+
+- [*Firefox OS*](/docs/firefoxos) support for building mobile hosted and packaged apps.
