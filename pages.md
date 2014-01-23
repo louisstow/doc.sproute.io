@@ -103,15 +103,17 @@ Set a variable to a value. If the variable contains a dot `.` the name before th
 {{ debug obj }}
 ~~~
 
-### {{ expr &lt;expr&gt; }}
+### {{ expr &lt;variable&gt; &lt;expr&gt; }}
+- `variable`: Variable to store the result of the expression.
 - `expr`: Mathematical expression.
 
-This is a slightly advanced function to perform calculations. The output of the expression is included in the HTML so use this like you were displaying a variable.
+This is a slightly advanced function to perform calculations. The result of the expression is stored in the variable provided.
 
 See the [MathJS](http://mathjs.org) docs for more information about available operators and Math functions.
 
 ~~~
-{{ expr :article.thumbsUp - :article.thumbsDown }}
+{{ expr score :article.thumbsUp - :article.thumbsDown }}
+{{ score }}
 ~~~
 
 ### {{ date &lt;date&gt; &lt;format&gt; }}

@@ -77,13 +77,15 @@
 {{ set obj.a.very.deep.property 2 }}
 {{ set obj.&quot;property.with.dot&quot; 3 }}
 {{ debug obj }}</code></pre>
-<h3 id="expr-expr">{{ expr &lt;expr&gt; }}</h3>
+<h3 id="expr-variable-expr">{{ expr &lt;variable&gt; &lt;expr&gt; }}</h3>
 <ul>
+<li><code>variable</code>: Variable to store the result of the expression.</li>
 <li><code>expr</code>: Mathematical expression.</li>
 </ul>
-<p>This is a slightly advanced function to perform calculations. The output of the expression is included in the HTML so use this like you were displaying a variable.</p>
+<p>This is a slightly advanced function to perform calculations. The result of the expression is stored in the variable provided.</p>
 <p>See the <a href="http://mathjs.org">MathJS</a> docs for more information about available operators and Math functions.</p>
-<pre><code>{{ expr :article.thumbsUp - :article.thumbsDown }}</code></pre>
+<pre><code>{{ expr score :article.thumbsUp - :article.thumbsDown }}
+{{ score }}</code></pre>
 <h3 id="date-date-format">{{ date &lt;date&gt; &lt;format&gt; }}</h3>
 <ul>
 <li><code>date</code>: The date to format in UNIX timestamp form.</li>
