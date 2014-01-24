@@ -6,10 +6,10 @@ Sproute has user accounts built-in so security is simple. You must create a [rou
 
 The default user types are `admin` and `member`. You may extend this by updating the `users` [model](/docs/models) and creating a values array in order of superiority (see Heirarchy below).
 
-There are other special in-built user types you may use when specifying permissions:
+There are other special built-in user types you may use when specifying permissions:
 
 * `admin`: At least one admin account exists when Sproute is first installed. This account is defined in the [config](/docs/config).
-* `owner`: Will ensure the [`_creator`](/docs/rest#in-built-fields) matches the logged in user.
+* `owner`: Will ensure the [`_creator`](/docs/rest#built-in-fields) matches the logged in user.
 * `member`: Any logged in user.
 * `anyone`: No requirement.
 * `stranger`: Must *not* be logged in.

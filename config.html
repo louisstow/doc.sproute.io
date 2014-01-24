@@ -6,9 +6,6 @@
 <pre><code>{{ each error as e }}
     &lt;div&gt;{{e.message}}&lt;/div&gt;
 {{ / }}</code></pre>
-<h3 id="anti-csrf">Anti CSRF</h3>
-<p>To prevent an attack known as Cross-Site Request Forgery. A unique token will be generate for each user and stored in the session date under the key <code>_csrf</code>. Any non-GET request to the server will require the token in the request body.</p>
-<pre><code>&lt;input type=&#39;hidden&#39; name=&#39;_csrf&#39; value=&#39;{{session._csrf}}&#39; /&gt;</code></pre>
 <h3 id="recaptcha">reCAPTCHA</h3>
 <p>To implement a CAPTCHA you can use <a href="https://www.google.com/recaptcha/admin/create">reCAPTCHA</a> by setting up a public and private key.</p>
 <p>Put the private key in the config then to use a CAPTCHA in a form, use the template tag:</p>

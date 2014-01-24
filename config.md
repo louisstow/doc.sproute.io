@@ -14,14 +14,6 @@ To force an API to return JSON instead of the rendered error page, submit the re
 {{ / }}
 ~~~
 
-### Anti CSRF
-
-To prevent an attack known as Cross-Site Request Forgery. A unique token will be generate for each user and stored in the session date under the key `_csrf`. Any non-GET request to the server will require the token in the request body.
-
-~~~
-<input type='hidden' name='_csrf' value='{{session._csrf}}' />
-~~~
-
 ### reCAPTCHA
 
 To implement a CAPTCHA you can use [reCAPTCHA](https://www.google.com/recaptcha/admin/create) by setting up a public and private key.

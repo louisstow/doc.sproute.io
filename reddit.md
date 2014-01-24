@@ -2,7 +2,7 @@
 
 [Reddit](http://reddit.com) is a link-sharing website with users, categories and a voting system to decide which links should be displayed first.
 
-The first thing we should do is identify the dynamic data then define the model that will store the links. The model will need to store the title, the destination link, the subreddit (or category) and how many votes the link has received. Every other field will be created for us through the [in-built fields](/docs/rest#in-built-fields).
+The first thing we should do is identify the dynamic data then define the model that will store the links. The model will need to store the title, the destination link, the subreddit (or category) and how many votes the link has received. Every other field will be created for us through the [built-in fields](/docs/rest#built-in-fields).
 
 ## Models
 Create a model called `links` and create the following fields and properties:
@@ -21,7 +21,7 @@ Reddit has a list of the top links from every subreddit (or category) on the fro
 
 	{{ get /data/links as links }}
 
-All data in a Sproute app is accessible through an [HTTP interface](/docs/rest), even in the template language. The previous tag will get all rows in the links model. Though there could be many links so we should limit the amount to 20. We should also sort the collection by how many votes it received (highest first).
+All data in a Sproute app is accessible through an [HTTP interface](/docs/rest), even in the template language. The previous tag will get **all** rows in the links model. Though there could be many links so we should limit the amount to 20. We should also sort the collection by how many votes it received (highest first). Replace the `get` tag with this:
 
 	{{ get /data/links?limit=20&sort=vote,desc as links }}
 
@@ -58,7 +58,7 @@ We should display some more information about the link because we can. Let's add
 	{{ / }}
 	</ul>
 
-You'll notice some fields are being used that we didn't define! These are the in-built fields mentioned earlier. Every row will automatically store the date it was created and the username of the creator.
+You'll notice some fields are being used that we didn't define! These are the built-in fields mentioned earlier. Every row will automatically store the date it was created and the username of the creator.
 
 We also use a handy tag called `ago` which will return the date in an approximate time from now (e.g. 5 hours ago). Notice the little colon ( `:` ) before the variable. It's a special syntax to evaluate the variable before processing the tag. This is because some tags require a variable and some require a value. Another syntax for this is `$(<variable>)`.
 
@@ -80,7 +80,7 @@ Create a new Page called `login` and add the following HTML:
 
 This is just a basic HTML form. The magic happens in `/api/login` which is an internal endpoint to create a session for a [user](/docs/users) and give them [access](/docs/permissions) to parts of your application. The query option `goto` will redirect the user to a URL, in this case index.
 
-You may do the same for register but change the action endpoint from `/api/login` to `/api/register`.
+Do the same for register but change the action endpoint from `/api/login` to `/api/register`.
 
 ## Routes
 One thing you might have noticed by now is that this page is not yet accessible from the browser. This is because we need to define a Route to match a URL to a Page.
@@ -115,14 +115,14 @@ You might have noticed this page can be accessible by users that aren't logged i
         {{ redirect /login }}
     {{ / }}
 
-This will perform some logic so if the `session.user` variable is empty, redirect the user to the `/login` route.
+This will perform some logic so if the `session.user` variable is empty, redirect the user to the `/login` route. This is my preferred method as a redirect is more user-friendly than an error message.
 
 ## Permissions
 The other option is through Permissions. Click `Permissions` to see a list of default permissions. You will see some [complex routes](/docs/routes) and a required [user type](/docs/permissions#user-types). This will perform a check at the very start of the request to see if the current user meets the minimum required user type.
 
 We can add our own permission for the route `/submit` that requires the minimum user type to be `Member`. If the user does not meet this requirement they will be given an error message formatted in JSON. You should also use `* ALL` for the method as this corresponds to HTTP method and routes will respond to a GET *and* POST requests.
 
-The other permissions provide some default security that prevents just anyone from deleting or modifying data unless they are the owner or an admin. However you may change these permissions to your digression.
+The other permissions provide some default security that prevents just anyone from deleting or modifying data unless they are the owner or an admin. However you may change these permissions to your discretion.
 
 Now let's go back to the subreddit page we have not yet created. Create a new page called `subreddit` and copy all the code from `index` as the subreddit listing page will be largely similar.
 

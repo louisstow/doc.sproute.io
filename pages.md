@@ -214,7 +214,7 @@ Stop processing the page and respond to the user with a JSON string of the varia
 If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (`&amp;#123;`) or put a forwardslash before the tag `\{{`.
 
 ## Global Variables
-When rendering a page, you have access to a variety of in-built variables.
+When rendering a page, you have access to a variety of variables.
 
 ### params
 This object contains the placeholders specified from the [routes](/docs/routes).
@@ -249,7 +249,7 @@ All the request headers sent to the page in lower-case.
 ~~~
 
 ### session
-The in-built user accounts are attached to the session object. You will mainly be using the user account at `session.user`. This contains the entire logged in user object. If the user is not logged-in this value will be empty.
+The built-in user accounts are attached to the session object. You will mainly be using the user account at `session.user`. This contains the entire logged in user object. If the user is not logged-in this value will be empty.
 
 ### self
 Assorted variables are contained in the `self` object.

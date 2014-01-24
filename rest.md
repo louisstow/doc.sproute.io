@@ -86,7 +86,7 @@ DELETE /data/articles/_id/5196eecb08e4860000000001
 
 - `?goto=url`: After the DELETE redirect to a URL.
 
-## In-built fields
+## Built-In fields
 
 Every row in a model comes with useful fields.
 

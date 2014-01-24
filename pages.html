@@ -151,7 +151,7 @@
 <h3 id="escaping-the-tag">Escaping the tag</h3>
 <p>If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (<code>&amp;amp;#123;</code>) or put a forwardslash before the tag <code>\{{</code>.</p>
 <h2 id="global-variables">Global Variables</h2>
-<p>When rendering a page, you have access to a variety of in-built variables.</p>
+<p>When rendering a page, you have access to a variety of variables.</p>
 <h3 id="params">params</h3>
 <p>This object contains the placeholders specified from the <a href="/docs/routes">routes</a>.</p>
 <h3 id="query">query</h3>
@@ -170,7 +170,7 @@
     {{ redirect :headers.referer }}
 {{ / }}</code></pre>
 <h3 id="session">session</h3>
-<p>The in-built user accounts are attached to the session object. You will mainly be using the user account at <code>session.user</code>. This contains the entire logged in user object. If the user is not logged-in this value will be empty.</p>
+<p>The built-in user accounts are attached to the session object. You will mainly be using the user account at <code>session.user</code>. This contains the entire logged in user object. If the user is not logged-in this value will be empty.</p>
 <h3 id="self">self</h3>
 <p>Assorted variables are contained in the <code>self</code> object.</p>
 <ul>
