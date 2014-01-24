@@ -31,3 +31,5 @@ To avoid spamming on your space, you can set a rate limit in seconds to prevent 
 ### URL
 
 When using a custom domain, put the full URL here for any links that need to point to the space such as password recovery emails. Make sure to leave off a trailing backslash `/`.
+
+You must change your DNS settings on the domain so that the A record points to `115.146.76.79`.
