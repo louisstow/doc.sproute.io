@@ -1,0 +1,85 @@
+<h1 id="build-a-chat-app-for-firefox-os">Build a Chat App for Firefox OS</h1>
+<p>In this tutorial we will build a chat app for Firefox OS from scratch!</p>
+<p>A chat app needs persistent data to store all the messages and users. There are multiple free backend-as-a-service solutions we could use such as <a href="http://firebase.com">Firebase</a> or <a href="http://hood.ie">Hood.ie</a>. In this tutorial we will be using my own solution: <a href="http://getsproute.com">Sproute</a>.</p>
+<p><a href="http://getsproute.com/signup">Create an account</a> with a unique subdomain then access the Dashboard through <code>http://&lt;mysubdomain&gt;.sproute.io/admin</code>.</p>
+<p>In Sproute there is a concept called Models. A model defines the dynamic data in our app with properties for data integrity. We will need a model called <code>messages</code> with the following fields:</p>
+<ul>
+<li><code>to</code>: Text, Required</li>
+<li><code>content</code>: Text, Required, Min: 1, Max: 140</li>
+</ul>
+<p>The <code>to</code> field will contain the username the message is addressed to. The <code>content</code> field will be the message being sent with some limits on the length. Every other bit of information will be created for us through the <a href="http://getsproute.com/docs/rest#built-in-fields">built-in fields</a>.</p>
+<p>We need a way to render the messages, this is done through Pages. A page is basic HTML with embedded <a href="http://getsproute.com/docs/pages">template tags</a> for retrieving and processing data.</p>
+<p>Open the <code>index</code> page. This is the main page visible when people view your space. Here we need to retrieve all messages for the logged in user and display them grouped by the recipient. This is possible through the following template tag:</p>
+<pre><code>{{ get /data/messages/to/:session.user.name?sort=_created,desc&amp;limit=10 as messages }}</code></pre>
+<p>All data is retrieved through an <a href="http://getsproute.com/docs/rest">HTTP interface</a> so the <code>get</code> tag must take a URL. The request above is retrieving all messages where the <code>to</code> field is equal to the logged in user name and stores the results in a variable called <code>messages</code>.</p>
+<p>A colon can be used in a template tag to evaluate a variable for processing the tag. We use a query parameter to sort the results by recently created first and limit the results to 10.</p>
+<p>Let's display each message in an unordered list:</p>
+<pre><code>&lt;ul&gt;
+    {{ each messages as message }}
+    &lt;li&gt;
+        &lt;a href=&quot;/thread/{{message._creatorName}}&quot;&gt;
+            &lt;strong&gt;{{ message._creatorName }}&lt;/strong&gt;
+            {{ ago :message._created }}
+        &lt;/a&gt;
+        &lt;div&gt;{{ message.content }}&lt;/div&gt;
+    &lt;/li&gt;
+    {{ / }}
+&lt;/ul&gt;</code></pre>
+<p>Loop over each message in the collection with the <code>each</code> tag. In the body of the tag we will print some variables for each message. We have a link to a not-yet-made thread page for each sender, the sender name (<code>_creatorName</code>), the message and how long ago it was sent.</p>
+<p>We need a way for users to send a message. We can do this with a form:</p>
+<pre><code>&lt;form action=&quot;/data/messages?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    To: &lt;input type=&quot;text&quot; name=&quot;to&quot; /&gt;
+&lt;/label&gt;
+&lt;div&gt;
+    &lt;textarea name=&quot;content&quot;&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>As mentioned above, all data is retrieved and modified through an HTTP interface. This means we can use a simple HTML form to create a new message.</p>
+<p>User accounts are built into Sproute but we need to create some pages and forms to allow users to register and login. Create a new page called <code>login</code>:</p>
+<pre><code>{{ include header }}
+&lt;form action=&quot;/api/login?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    &lt;div&gt;Username:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;name&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Password:&lt;/div&gt;
+    &lt;input type=&quot;password&quot; name=&quot;pass&quot; /&gt;
+&lt;/label&gt;
+&lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+&lt;/form&gt;
+{{ include footer }}</code></pre>
+<p>Nothing special there. Just a simple HTML form to post the user details to a <a href="https://getsproute.com/docs/users#post-apilogin">user end-point</a> <code>/api/login</code>. The user will then be directed to the value of the <code>goto</code> query parameter.</p>
+<p>Accessing pages through a request is done with Routes. A route is a pattern for a requested URL that will render a page if matched. There will already be a route for the index page. Create a new route with the pattern <code>/login</code> for the login page.</p>
+<p>Users can now login but they first need to register. Follow the exact steps for login but replace <code>/api/login</code> with <code>/api/register</code>. Simple stuff.</p>
+<p>One more feature to add is a conversation thread page. Create a new page called thread. This will largely be similar to the index page except we need to filter on the user of the thread.</p>
+<pre><code>{{ get /data/messages/_creatorName/:params.name?sort=created,desc&amp;limit=20 as messages }}</code></pre>
+<p>Filter on the builtin field, <code>_creatorName</code> with the value of <code>params.name</code>. The params object is a collection of placeholder values created in the route.</p>
+<p>One problem with the get request above is it will retrieve all messages even if it's not addressed to us. The solution to this is to filter further inside the <code>each</code> tag:</p>
+<pre><code>{{ each messages as message }}
+    {{ if message.to eq :session.user.name }}
+        ... display message here ...
+    {{ /if }}
+{{ /each }}</code></pre>
+<p>We can also include a reply form using the same HTML form as before but with the <code>to</code> field hidden:</p>
+<pre><code>&lt;form action=&quot;/data/messages?goto={{self.url}}&quot; method=&quot;post&quot;&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;to&quot; value=&quot;{{params.name}}&quot; /&gt;
+&lt;div&gt;
+    &lt;textarea name=&quot;content&quot;&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>But how do we access this page? We already created links to it in the index page with the pattern <code>/thread/&lt;user.name&gt;</code> so let's create a route that will match: <code>/thread/:name</code>. This is where <code>params.name</code> comes from.</p>
+<p>This will be an app on the Firefox Marketplace as a hosted app, meaning the app will load our webpage. Every hosted app needs a manifest file. Create a page called <code>manifest</code> and include the necessary <a href="https://developer.mozilla.org/en-US/Apps/Developing/Manifest">JSON data</a>:</p>
+<pre><code>{
+    &quot;name&quot;: &quot;{{name}}&quot;,
+    &quot;description&quot;: &quot;A simple chat app&quot;,
+    &quot;launch_path&quot;: &quot;/&quot;,
+    &quot;icons&quot;: {
+        &quot;128&quot;: &quot;/path/to/icon&quot;
+    }
+}</code></pre>
+<p>Create a Route with the pattern <code>/manifest.webapp</code> pointing to the manifest page.</p>
+<p>We're done! Test this in the <a href="https://developer.mozilla.org/en-US/Firefox_OS/Using_the_App_Manager">app manager</a> by using the link to the manifest (e.g. http://chatapp.sproute.io/manifest.webapp).</p>
