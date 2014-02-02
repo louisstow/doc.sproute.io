@@ -4,7 +4,7 @@ In this tutorial we will build a chat app for Firefox OS from scratch!
 
 A chat app needs persistent data to store all the messages and users. There are multiple free backend-as-a-service solutions we could use such as [Firebase](http://firebase.com) or [Hood.ie](http://hood.ie). In this tutorial we will be using my own solution: [Sproute](http://getsproute.com).
 
-[Create an account](http://getsproute.com/signup) with a unique subdomain then access the Dashboard through `http://<mysubdomain>.sproute.io/admin`.
+[Create an account](http://getsproute.com/signup) with a unique subdomain then access the Dashboard through http://yoursubdomain.sproute.io/admin.
 
 In Sproute there is a concept called Models. A model defines the dynamic data in our app with properties for data integrity. We will need a model called `messages` with the following fields:
 
