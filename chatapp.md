@@ -2,7 +2,7 @@
 
 In this tutorial we will build a chat app for Firefox OS from scratch!
 
-A chat app needs persistent data to store all the messages and users. There are multiple free backend-as-a-service solutions we could use such as [Firebase](http://firebase.com) or [Hood.ie](http://hood.ie). In this tutorial we will be using my own solution: [Sproute](http://getsproute.com).
+A chat app needs persistent data to store all the messages and users. There are multiple free backend-as-a-service solutions we could use. In this tutorial we will be using my own solution: [Sproute](http://getsproute.com).
 
 [Create an account](http://getsproute.com/signup) with a unique subdomain then access the Dashboard through http://yoursubdomain.sproute.io/admin.
 
