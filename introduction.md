@@ -1,4 +1,4 @@
-Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a [reddit-like](/docs/reddit) webapp.
+Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a [Reddit](/docs/reddit) app or watch the [Getting Started](/getting-started) video.
 
 ### Core Concepts
 
@@ -20,13 +20,13 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to go
 
 ### Guides
 
-- [**Reddit**](/docs/reddit) clone from scratch. Very good beginners guide.
+- [**Reddit**](/docs/reddit). Create a reddit clone from scratch. Very good beginners guide.
 
-- [**Chat App**](/docs/chatapp) for Firefox OS. Send messages to other users.
+- [**Chat App**](/docs/chatapp). Build an app to exchange messages between users with support for Firefox OS.
 
-- [**Blog**](/docs/chatapp) from scratch. Intermediate level recommended.
+- [**Blog**](/docs/blogapp). A simple single user blog platform. Intermediate level recommended.
 
 - [**CMS**](/docs/cmsapp). Create a content management system with pages and custom URLs. Intermediate level recommended.
 
-- [**Firefox OS**](/docs/firefoxos) support for building mobile hosted and packaged apps.
+- [**Firefox OS**](/docs/firefoxos). Learn how to support Firefox OS for both hosted and packaged apps.
 
