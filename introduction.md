@@ -22,6 +22,11 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to go
 
 - [**Reddit**](/docs/reddit) clone from scratch. Very good beginners guide.
 
+- [**Chat App**](/docs/chatapp) for Firefox OS. Send messages to other users.
+
+- [**Blog**](/docs/chatapp) from scratch. Intermediate level recommended.
+
+- [**CMS**](/docs/cmsapp). Create a content management system with pages and custom URLs. Intermediate level recommended.
+
 - [**Firefox OS**](/docs/firefoxos) support for building mobile hosted and packaged apps.
 
-- [**Chat App**](/docs/chatapp) for Firefox OS. Send messages to other users.

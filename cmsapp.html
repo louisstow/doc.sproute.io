@@ -1,0 +1,95 @@
+<h1 id="building-a-cms-in-sproute">Building a CMS in Sproute</h1>
+<p><em>This tutorial requires a basic understanding of Sproute and its core concepts. If you're new to Sproute maybe check out the <a href="/docs/reddit">Reddit</a> tutorial or the <a href="/getting-started">Getting Started</a> video first.</em></p>
+<p>In this guide we will build a simple content management system. The dynamic data in a CMS is pages. We will need to list the pages in the navigation and render the page based on a slug (custom path).</p>
+<p>Create a model called <code>pages</code> with the following fields:</p>
+<ul>
+<li><code>slug</code>: Text, Required, Min: 1, Max: 50</li>
+<li><code>title</code>: Text, Required</li>
+<li><code>body</code>: Text, Required</li>
+<li><code>order</code>: Number, Default Value: 1</li>
+</ul>
+<p>Open the <code>index</code> view and include the following:</p>
+<pre><code>{{ unless params.slug }}
+    {{ set params.slug home }}
+{{ / }}
+
+{{ get /data/pages/slug/:params.slug?single=true as page }}
+
+{{ set title :page.title }}
+{{ include header }}
+
+{{ if page }}
+    {{ if session.user }}
+        &lt;div&gt;&lt;a href=&quot;/edit/{{page._id}}&quot;&gt;Edit&lt;/a&gt;&lt;/div&gt;
+    {{ / }}
+    
+    {{#page.body}}
+{{ else }}
+    &lt;p&gt;404. Page not found!&lt;/p&gt;
+{{ / }}
+
+{{ include footer }}</code></pre>
+<p>The index page will receive all unmatched routes and check if the URL is in the model. If so it will render the body unescaped otherwise it will give a <code>404</code> message. When there was nothing passed into the route then it's the index page so retrieve the slug of <code>home</code>.</p>
+<p>We also include an Edit link for those logged in (assuming a single user system).</p>
+<p>The route to catch all unmatched requests will look like <code>/:slug</code>. But this has to come last in the list so other pages can be matched first.</p>
+<p>Create a new page called <code>write</code>:</p>
+<pre><code>&lt;form action=&quot;/data/pages?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    &lt;div&gt;Title:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;title&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Slug:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;slug&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Order:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;order&quot; /&gt;
+&lt;/label&gt;
+&lt;div&gt;
+    &lt;textarea name=&quot;body&quot;&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Create Page&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>This is basic HTML form to create a row in the pages model. The edit page is very similar. Create a new page called <code>edit</code>:</p>
+<pre><code>{{ get /data/pages/_id/:params.id?single=true as page }}
+
+&lt;form action=&quot;/data/pages/_id/{{params.id}}?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    &lt;div&gt;Title:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;title&quot; value=&quot;{{page.title}}&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Slug:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;slug&quot; value=&quot;{{page.slug}}&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Order:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;order&quot; value=&quot;{{page.order}}&quot; /&gt;
+&lt;/label&gt;
+&lt;div&gt;
+    &lt;textarea name=&quot;body&quot;&gt;{{#page.body}}&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Update Page&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>We retrieve the article to edit and fill the details into the form values. The form action is also changed to modify all rows that match the <code>_id</code>.</p>
+<p>The header page should list all the available pages and links to their slug. Open <code>header</code> and include the following:</p>
+<pre><code>&lt;title&gt;{{title}}&lt;/title&gt;
+&lt;h1&gt;{{self.name}}&lt;/h1&gt;
+
+{{ get /data/pages?sort=order as navpages }}
+&lt;nav&gt;
+{{ each navpages as p }}
+    &lt;a href=&quot;/{{p.slug}}&quot;&gt;{{p.title}}&lt;/a&gt;
+{{ / }}
+&lt;/nav&gt;</code></pre>
+<p>Notice we render the <code>title</code> variable at the beginning. This is because we have set the value before including it in the index page. Included pages have access to the variables of the 'includer'. <em>Note this can cause problems when included pages leak variables such as <code>navpages</code> and <code>p</code> created above</em>.</p>
+<p>We also sort the pages by the order field so the author can decide which page should be displayed first.</p>
+<p>Now that all the pages are ready, let's create those routes!</p>
+<ul>
+<li><code>/</code> =&gt; <code>index</code></li>
+<li><code>/write</code> =&gt; <code>write</code></li>
+<li><code>/edit/:id</code> =&gt; <code>edit</code></li>
+<li><code>/:slug</code> =&gt; <code>index</code></li>
+</ul>
+<p>The route for the catch-all route is created last. Seeing as this is a single-user CMS, we should restrict registration and model creation to <code>admin</code>. Change the following permissions to require admin user-type: <code>POST /api/register</code> and <code>POST /data/:table</code>.</p>

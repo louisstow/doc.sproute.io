@@ -1,0 +1,122 @@
+<h1 id="building-a-blog-in-sproute">Building a Blog in Sproute</h1>
+<p><em>This tutorial requires a basic understanding of Sproute and its core concepts. If you're new to Sproute maybe check out the <a href="/docs/reddit">Reddit</a> tutorial or the <a href="/getting-started">Getting Started</a> video first.</em></p>
+<p>A Blog is the Hello World of any web framework.</p>
+<p>As always we should identify the dynamic data. In a blog it will be articles. Articles have a title, body content and maybe a category. Create a <a href="/docs/models">model</a> named <code>articles</code> with the following fields:</p>
+<ul>
+<li><code>title</code>: Text, Required</li>
+<li><code>body</code>: Text, Required</li>
+<li><code>category</code>: Text, Required</li>
+</ul>
+<p>The index page should list all the blog posts available. We can do this with a <a href="/docs/pages#get-url-role-as-variable"><code>get</code> tag</a>:</p>
+<pre><code>{{ get /data/articles?limit=10&amp;sort=_created,desc as articles }}
+
+{{ if articles.length }}
+    &lt;div class=&quot;articles&quot;&gt;
+    {{ each articles as article }}
+        &lt;div class=&quot;article&quot;&gt;
+        &lt;h2&gt;&lt;a href=&quot;/article/{{article._id}}&quot;&gt;{{article.title}}&lt;/a&gt;&lt;/h2&gt;
+        {{#article.body}}
+        &lt;div class=&quot;other&quot;&gt;
+        Posted {{ ago :article._created }} in &lt;a href=&quot;/category/{{article.category}}&quot;&gt;{{article.category}}&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;/div&gt;
+    {{ / }}
+    &lt;/div&gt;
+{{ else }}
+    &lt;p&gt;No articles here&lt;/p&gt;
+{{ / }}</code></pre>
+<p>We have a title and link pointing to the single page article by it's <a href="/docs/rest#built-in-fields"><code>_id</code></a>. The body is rendered with a hash <code>#</code> so any HTML will not be <a href="/docs/pages#variable">escaped</a>. This allows authors to enter their own HTML or use a WYSIWYG. Then underneath is some meta data like how long ago it was posted and a link to the category listing.</p>
+<p>The previous code assumes two <a href="/docs/routes">routes</a>: <code>/article/&lt;id&gt;</code> and <code>/category/&lt;name&gt;</code>. Before we add the routes we must create the pages they will point to. First create a new page called <code>show</code>:</p>
+<pre><code>{{ get /data/articles/_id/:params.id?single=true as article }}
+
+{{ if article }}
+  &lt;div class=&quot;article&quot;&gt;
+    &lt;h2&gt;{{article.title}}&lt;/h2&gt;
+    {{#article.body}}
+    &lt;div class=&quot;other&quot;&gt;
+      Posted {{ ago :article._created }} in &lt;a href=&quot;/category/{{article.category}}&quot;&gt;{{article.category}}&lt;/a&gt;. 
+      {{ if article._lastUpdated }}
+          Last edited {{ ago :article._lastUpdated }}
+      {{ / }}
+      
+      {{ if session.user }}
+        - &lt;a href=&quot;/edit/{{params.id}}&quot;&gt;Edit&lt;/a&gt;
+      {{ / }}
+    &lt;/div&gt;
+  &lt;/div&gt;
+{{ else }}
+    &lt;p&gt;Article does not exist&lt;/p&gt;
+{{ / }}</code></pre>
+<p>I copied most of this code from the index page but changed the get request to only retrieve the one article we are viewing. Use the query parameter <code>?single=true</code> to return a single object rather than a collection of results.</p>
+<p>We do a simple to check to see if the article exists. If so render the article just like the index page. One thing you will notice is a little check:</p>
+<pre><code>{{ if session.user }}
+    - &lt;a href=&quot;/edit/{{params.id}}&quot;&gt;Edit&lt;/a&gt;
+{{ / }}</code></pre>
+<p>This will show an Edit link if the user is logged in. In this blog we assume one user account will be the sole author (the admin user). It also assumes a new route: <code>/edit/&lt;id&gt;</code>.</p>
+<p>Before the content creation pages let's finish the last viewing pages. Create a new page called <code>category</code>:</p>
+<pre><code>{{ get /data/articles/category/:params.category?sort=_created,desc as articles }}
+
+&lt;h2&gt;{{params.category}}&lt;/h2&gt;
+
+{{ if articles.length }}
+    &lt;div class=&quot;articles&quot;&gt;
+    {{ each articles as article }}
+        &lt;div class=&quot;article&quot;&gt;
+        &lt;h2&gt;&lt;a href=&quot;/article/{{article._id}}&quot;&gt;{{article.title}}&lt;/a&gt;&lt;/h2&gt;
+        {{#article.body}}
+        &lt;div class=&quot;other&quot;&gt;
+        Posted {{ ago :article._created }}
+        &lt;/div&gt;
+        &lt;/div&gt;
+    {{ / }}
+&lt;/div&gt;
+{{ else }}
+    &lt;p&gt;No articles here.&lt;/p&gt;
+{{ / }}</code></pre>
+<p>Again this is largely taken from the index page. The only difference is we filter the results based on the category field and the one passed into the URL parameter. We also include the category as a heading and remove it from the meta data section.</p>
+<p>Right, onto the content creation pages. Create a new page called <code>write</code>:</p>
+<pre><code>&lt;form action=&quot;/data/articles?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    &lt;div&gt;Title:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;title&quot; /&gt;
+&lt;/label&gt;
+
+&lt;label&gt;
+    &lt;div&gt;Category:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;category&quot; /&gt;
+&lt;/label&gt;
+
+&lt;div&gt;
+    &lt;textarea name=&quot;body&quot;&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Write Article&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>This couldn't be simpler. A basic HTML form to create an article. The edit page is slightly more complex. Create a new page called <code>edit</code>:</p>
+<pre><code>{{ get /data/articles/_id/:params.id?single=true as article }}
+
+&lt;form action=&quot;/data/articles/_id/{{params.id}}?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    &lt;div&gt;Title:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;title&quot; value=&quot;{{article.title}}&quot; /&gt;
+&lt;/label&gt;
+
+&lt;label&gt;
+    &lt;div&gt;Category:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;category&quot; value=&quot;{{article.category}}&quot; /&gt;
+&lt;/label&gt;
+
+&lt;div&gt;
+    &lt;textarea name=&quot;body&quot;&gt;{{article.body}}&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Edit Article&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>The code has been taken from the <code>write</code> page but now we retrieve the article information and fill it in the value of the form fields.</p>
+<p>The other change is in the <code>action</code> property of the form element. Instead of posting to <code>/data/articles</code> we need to specify a filter to apply the modifications on. In this case the article with the <code>id</code> from the URL parameter.</p>
+<p>Now let's create those routes!</p>
+<ul>
+<li><code>/article/:id</code> =&gt; show</li>
+<li><code>/category/:category</code> =&gt; category</li>
+<li><code>/edit/:id</code> =&gt; edit</li>
+<li><code>/write</code> =&gt; write</li>
+</ul>
+<p>And finally, to secure everything, add some <a href="/docs/permissions">permissions</a> so that <code>/write</code> and <code>/edit</code> requires admin user-type. You can also change <code>POST /api/register</code> and <code>POST /data/:table</code> to admin just in-case.</p>
