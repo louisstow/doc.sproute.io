@@ -18,6 +18,8 @@ Welcome to the Sproute documentation. Before diving into the docs, be sure to go
 
 - [**Config**](/docs/config) settings for your space.
 
+- [**Static Files**](/docs/static) and some ways to manage them in and out of Sproute.
+
 ### Guides
 
 - [**Reddit**](/docs/reddit). Create a reddit clone from scratch. Very good beginners guide.
