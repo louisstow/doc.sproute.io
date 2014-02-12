@@ -22,6 +22,14 @@ Retrieve rows under a model where the field matches the value.
 GET /data/articles/_id/5196eecb08e4860000000001
 ~~~
 
+### /data/&lt;model&gt;/&lt;field&gt;/&lt;from&gt;/&lt;to&gt;
+
+Retrieve rows under a model where the field matches a range between two values: from and to.
+
+~~~
+GET /data/articles/likes/0/100
+~~~
+
 ### Query Options:
 
 - `?limit=[skip,]offset`: Limit the amount of rows returned. Skip is the starting point (defaults to `0`). Offset is how many rows to return after the starting point.
