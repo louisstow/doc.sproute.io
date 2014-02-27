@@ -1,0 +1,137 @@
+<h1 id="how-to-create-a-portfolio-from-scratch-with-sproute">How to create a Portfolio from scratch with Sproute</h1>
+<p>This tutorial will show you how to build your very own online portfolio using <a href="http://getsproute.com">Sproute</a>: a hosted environment for building dynamic web apps. The site will have a dynamic list of portfolio items to showcase and a contact form. See the <a href="http://portfolio.sproute.io">example app live</a>.</p>
+<h2 id="overview-of-sproute">Overview of Sproute</h2>
+<p>Sproute is a hosted framework for rapid development of web applications. It allows you to easily define dynamic data and comes with lots of useful features out of the box such as user accounts and security.</p>
+<h2 id="core-concepts">Core Concepts</h2>
+<p>There are 4 main concepts that you will need to understand for building a Sproute app:</p>
+<h3 id="pages"><a href="http://getsproute.com/docs/pages">Pages</a></h3>
+<p>Pages are just like HTML files with embedded template tags. This is a similar model to PHP where a request runs code in a page.</p>
+<h3 id="models"><a href="http://getsproute.com/docs/models">Models</a></h3>
+<p>Models form the dynamic parts of the web app. Think of it like a database table. You define fields on a model and some integrity properties like maximum length, uniqueness, data type etc.</p>
+<h3 id="routes"><a href="http://getsproute.com/docs/routes">Routes</a></h3>
+<p>Routes are a neat way to make pretty SEO-friendly URLs. You create a pattern and if a request matches that pattern, it will render a page.</p>
+<p>We can include wildcards and placeholders in the route so when the page is rendered we have information about what was requested in the placeholder.</p>
+<h3 id="permissions"><a href="http://getsproute.com/docs/permissions">Permissions</a></h3>
+<p>Permissions are defined at the very end and is a way to limit parts of your application to a certain user-type. For instance you would only want an Admin to be able to delete an entire model and not just anyone.</p>
+<p>Permissions are implemented in the same way as routes with URL patterns but instead of pointing to a page, it points to a required user-type before the request can be full filed. Think of it as the gate keeper before letting the request go through.</p>
+<h2 id="create-a-new-project">Create a new Project</h2>
+<p>If you haven't already, <a href="http://getsproute.com/signup">signup for an account</a>. You will need to give the project (or space) a unique name so it can be accessible at <code>&lt;yourname&gt;.sproute.io</code>.</p>
+<p>Once the project has been created, visit the Dashboard at <code>http://&lt;yourapp&gt;.sproute.io/admin</code> and login with same credentials you signed up with.</p>
+<h2 id="create-the-models">Create the Models</h2>
+<p>The dynamic data in this application will be the portfolio items. We will call this 'works'. Create a new model called <code>works</code> with the following fields and properties:</p>
+<ul>
+<li><code>title</code> - Text, Required</li>
+<li><code>year</code> - Number, Required</li>
+<li><code>slug</code> - Text, Required</li>
+<li><code>tags</code> - Text, Required</li>
+<li><code>body</code> - Text, Required</li>
+</ul>
+<p>Each work item will have a title, a year it was created, a slug which will be a pretty URL, a list of relevant tags and finally a body which will contain all the information about the work with HTML.</p>
+<h2 id="create-the-work-listing-page">Create the Work listing page</h2>
+<p>We need a new page to render the data from the model. Click Pages and create a new page called <code>works</code>. We will list all the work items sorted by year, most recent first. This can be done with a template tag:</p>
+<pre><code>{{ get /data/works?sort=year,desc as works }}</code></pre>
+<p>All data is retrieved, created and modified through an <a href="http://getsproute.com/docs/rest">HTTP interface</a> (or REST API). Try the above in your browser and it will return the data as JSON.</p>
+<p>Another template tag can loop over the collection in the variable called <code>works</code>:</p>
+<pre><code>{{ each works as work }}
+    &lt;a href=&quot;/work/{{work.slug}}&quot;&gt;
+        &lt;strong&gt;{{work.title}}&lt;/strong&gt;
+        &lt;div&gt;{{work.year}} &amp;mdash; {{work.tags}}&lt;/div&gt;
+    &lt;/a&gt;
+{{ / }}</code></pre>
+<p>This will render each item returned in the <code>works</code> collection with a link to the <code>slug</code>, the title, the year and the tags.</p>
+<div class="figure">
+<img src="http://i.imgur.com/jnBoAqF.png" alt="Work page" /><p class="caption">Work page</p>
+</div>
+<h2 id="create-the-view-page">Create the View page</h2>
+<p>Every portfolio item will need it's own page in the web app. Luckily we don't need to create a new page in Sproute for each entry, we can just have one. Let's call it <code>view</code>. Include a get request to get the data about the item:</p>
+<pre><code>{{ get /data/works/slug/:params.slug?single=true as work }}</code></pre>
+<p>Using the HTTP interface we can filter results based on a field; in this case the <code>slug</code> field using the placeholder in the route (<code>params.slug</code>). The <code>?single=true</code> parameter will return the object rather than a single element collection.</p>
+<p>Let's render the data:</p>
+<pre><code>&lt;h2&gt;{{work.title}}&lt;/h2&gt;
+&lt;div&gt;{{work.year}} &amp;mdash; {{work.tags}}&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+    {{#work.body}}
+&lt;/div&gt;</code></pre>
+<p>We use a hash symbol (<code>#</code>) before the variable name so HTML in the field won't be escaped. This should only be used when the data can be trusted as it opens your application to XSS vulnerabilities.</p>
+<p>We need to create a Route so that this page is accessible. Click Route and add the following:</p>
+<ul>
+<li>Route: <code>/work/:slug</code>, Page: <code>view</code></li>
+</ul>
+<div class="figure">
+<img src="http://i.imgur.com/cHWioaS.png" alt="View page" /><p class="caption">View page</p>
+</div>
+<h2 id="create-the-entry-page">Create the Entry page</h2>
+<p>We need a way for the admin to submit new or old work. This can be done with a simple HTML form. Create a new page called <code>entry</code>:</p>
+<pre><code>&lt;form action=&quot;/data/works?goto=/works&quot; method=&quot;post&quot;&gt;
+
+&lt;label&gt;
+    &lt;div&gt;Title:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;title&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Slug:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;slug&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Tags:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;tags&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Year:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;year&quot; placeholder=&quot;2000&quot; /&gt;
+&lt;/label&gt;
+
+&lt;label&gt;
+    &lt;div&gt;&lt;textarea name=&quot;body&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
+&lt;/label&gt;
+
+&lt;div&gt;&lt;button type=&quot;submit&quot;&gt;Add Work&lt;/button&gt;&lt;/div&gt;
+&lt;/form&gt;</code></pre>
+<p>This will send a POST request to the REST API for creating a row in the <code>works</code> collection. Remember to create a route for the page:</p>
+<ul>
+<li>Route: <code>/entry</code>, Page: <code>entry</code></li>
+</ul>
+<h2 id="create-the-contact-page">Create the Contact page</h2>
+<p>All great websites need a contact form to send you messages. Sproute doesn't have this feature built-in but luckily other free services exist that do. In particular we will use <a href="http://www.formspree.com/">Formspree</a>.</p>
+<p>Create a new page called <code>contact</code>:</p>
+<pre><code>{{ if query.sent }}
+    Thanks for your message!
+{{ / }}
+
+&lt;h2&gt;Contact Me&lt;/h2&gt;
+&lt;form action=&quot;//api.formspree.com/&lt;YOUR EMAIL HERE&gt;&quot; method=&quot;POST&quot;&gt;
+    &lt;label&gt;
+        &lt;div&gt;Name:&lt;/div&gt;
+        &lt;input type=&quot;text&quot; name=&quot;name&quot; placeholder=&quot;Name&quot;&gt;
+    &lt;/label&gt;
+    &lt;label&gt;
+        &lt;div&gt;Email:&lt;/div&gt;
+        &lt;input type=&quot;email&quot; name=&quot;_replyto&quot; placeholder=&quot;Email&quot;&gt;
+    &lt;/label&gt;
+    &lt;label&gt;
+        &lt;textarea name=&quot;message&quot; rows=&quot;5&quot; placeholder=&quot;Your message&quot;&gt;&lt;/textarea&gt;
+    &lt;/label&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;_next&quot; value=&quot;http://portfolio.sproute.io/contact?sent=1&quot; /&gt;
+    &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>You will need to register the form with Formspree by sending a test message. Use your email address in the action field and the URL to the contact page in the <code>_next</code> input field. We use a query parameter to show a Thank You message once the message has been sent.</p>
+<p>Add the following route:</p>
+<ul>
+<li>Route: <code>/contact</code>, Page: <code>contact</code></li>
+</ul>
+<div class="figure">
+<img src="http://i.imgur.com/S79j1xc.png" alt="Contact page" /><p class="caption">Contact page</p>
+</div>
+<h2 id="lock-it-down">Lock it down!</h2>
+<p>The final thing we should do is add some permissions so naughty people can't tamper with the data. Add the following permissions with the user type of admin:</p>
+<ul>
+<li>Method: <code>* ALL</code>, Route: <code>/entry</code>, User: <code>Admin</code></li>
+<li>Method: <code>POST</code>, Route: <code>/data/:table</code>, User: <code>Admin</code></li>
+</ul>
+<p>This means only an admin can visit the <code>entry</code> page and only an admin can create new data.</p>
+<h2 id="prettify-with-a-template">Prettify with a template</h2>
+<p>You'll notice the space has no default template so it looks rather bland. I solved this by searching for a free CSS template and linking directly to a hosted CSS file.</p>
+<p>You could also use a CSS framework such as <a href="http://getbootstrap.com/">Bootstrap</a> or <a href="http://foundation.zurb.com/">Foundation</a>.</p>
+<p>See the documentation for information regarding <a href="https://getsproute.com/docs/static">hosting static assets</a>.</p>
+<h2 id="summary">Summary</h2>
+<p>We're done! This tutorial has covered a lot but by now you should have a fully functional online portfolio. Have fun with it and see if you can extend it with more features. Be sure to read the <a href="http://getsproute.com/docs">documentation</a> or <a href="http://getsproute.com/contact">contact us</a> for any support questions.</p>
