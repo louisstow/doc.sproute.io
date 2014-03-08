@@ -137,6 +137,17 @@ Returns a text representation of the time elapsed from now. Read more in the [Mo
 {{ ago :row._created }}
 ~~~
 
+### {{ word &lt;variable&gt; &lt;start&gt; &lt;offset&gt; }}
+- `variable`: Variable containing text content to splice.
+
+Will split the text variable by words and print based on the start index until the offset.
+
+~~~
+First 10 words from article:
+{{ word :row.body 0 10 }}
+~~~
+
+
 ### {{ include &lt;file&gt; }}
 - `file`: Include a text-file into the page.
 

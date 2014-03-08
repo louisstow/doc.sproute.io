@@ -180,12 +180,13 @@ The final thing we should do is add some permissions so naughty people can't tam
 
 - Method: `* ALL`, Route: `/entry`, User: `Admin`
 - Method: `POST`, Route: `/data/:table`, User: `Admin`
+- Method: `POST`, Route: `/api/register`, User: `Admin`
 
 This means only an admin can visit the `entry` page and only an admin can create new data.
 
 ## Prettify with a template
 
-You'll notice the space has no default template so it looks rather bland. I solved this by searching for a free CSS template and linking directly to a hosted CSS file. 
+You'll notice your space has no default template so it looks rather bland. I solved this by searching for a free CSS template and linking directly to a hosted CSS file. 
 
 You could also use a CSS framework such as [Bootstrap](http://getbootstrap.com/) or [Foundation](http://foundation.zurb.com/).
 
