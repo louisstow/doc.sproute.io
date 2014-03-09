@@ -26,8 +26,12 @@
 <h2 id="create-a-note">Create a note</h2>
 <p>Before creating the <code>view</code> page for a note, let's make a new page for creating a note. Create a new page called <code>create</code>. Add the following HTML:</p>
 <pre><code>&lt;form action=&quot;/data/notes?goto=/&quot; method=&quot;post&quot;&gt;
-        &lt;div&gt;&lt;textarea name=&quot;body&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
-        &lt;button type=&quot;submit&quot;&gt;Create Note&lt;/button&gt;
+    &lt;div&gt;&lt;textarea name=&quot;body&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;select name=&quot;sharing&quot;&gt;
+       &lt;option value=&quot;private&quot;&gt;Private&lt;/option&gt;
+       &lt;option value=&quot;public&quot;&gt;Public&lt;/option&gt;
+    &lt;/select&gt;&lt;/div&gt;
+    &lt;button type=&quot;submit&quot;&gt;Create Note&lt;/button&gt;
 &lt;/form&gt;</code></pre>
 <p>Simple! As mentioned above, all data is retrieved and modified through an HTTP interface. This means we can use a simple HTML form to create a new note.</p>
 <p>Because this is a new page we need to create a new route so the page is accessible. A route is a pattern for a requested URL that will render a page if matched. There will already be a route for the index page. Click Routes and create a new one with the following:</p>
@@ -56,17 +60,35 @@
 <h2 id="view-and-update-a-note">View and update a note</h2>
 <p>Previously we created a link to view a note. This will also be where we let users modify the note. Create a new page called <code>view</code> and add the following:</p>
 <pre><code>{{ get /data/notes/_id/:params.id?single=true as note }}
+
+{{ if note.sharing eq private }}
+    {{ if note._creator neq :session.user._id }}
+        {{ error This note is private }}
+    {{ / }}
+{{ / }}
+
 &lt;form action=&quot;/data/notes/_id/{{params.id}}?goto=/&quot; method=&quot;post&quot;&gt;
 &lt;div&gt;&lt;textarea name=&quot;body&quot;&gt;{{note.body}}&lt;/textarea&gt;&lt;/div&gt;
+&lt;div&gt;&lt;select name=&quot;sharing&quot;&gt;
+   &lt;option value=&quot;private&quot; selected&gt;Private&lt;/option&gt;
+   &lt;option value=&quot;public&quot;&gt;Public&lt;/option&gt;
+&lt;/select&gt;&lt;/div&gt;
 &lt;button type=&quot;submit&quot;&gt;Update Note&lt;/button&gt;
 &lt;/form&gt;</code></pre>
-<p>We make a request to get the note data for the note that was passed into the URL (through the <code>params</code> object). The query parameter <code>single=true</code> will return just the object instead of a one item collection.</p>
+<p>We make a request to get the note data for the note that was passed into the URL (through the <code>params</code> object). The query parameter <code>single=true</code> will return just the object instead of a one item collection. Next we check whether the note is private. If so throw an error if the user is not logged in or not the creator.</p>
 <p>This page requires a slightly complex route. We need to use a placeholder in the route so that <code>/view/anything</code> will still match the <code>view</code> page and store <code>anything</code> in a variable.</p>
 <p>Create a route with the following:</p>
 <ul>
 <li>Route: <code>/view/:id</code>, Page: <code>view</code></li>
 </ul>
 <p>Now you can see where <code>params.id</code> comes from. <code>params</code> is an object for all placeholders in the route and the matched values.</p>
+<h2 id="permissions">Permissions</h2>
+<p>The last important concept of Sproute is permissions. Permissions are just like routes where a requested URL matches a pattern but instead of pointing to a page, it validates against a required <a href="https://getsproute.com/docs/permissions#user-types">user type</a>.</p>
+<p>Click Permissions and add the following:</p>
+<ul>
+<li>Method: <code>GET</code>, Route: <code>/data/notes</code>, User: <code>Owner</code></li>
+</ul>
+<p>This will make sure the only notes listed will be ones the user has created.</p>
 <h2 id="firefox-os-support">Firefox OS support</h2>
 <p>Sproute can very easily support <a href="https://developer.mozilla.org/en-US/Marketplace/Publishing/Publish_options#Hosted_apps">hosted apps</a> on Firefox OS by creating a page with the <a href="https://developer.mozilla.org/en-US/Apps/Developing/Manifest">manifest JSON data</a> and the route: <code>/manifest.webapp</code>.</p>
 <p>Create a new page called <code>manifest</code> with the following:</p>

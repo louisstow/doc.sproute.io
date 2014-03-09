@@ -42,8 +42,12 @@ The `word` template tag will extract the first 5 words from the body content. We
 Before creating the `view` page for a note, let's make a new page for creating a note. Create a new page called `create`. Add the following HTML:
 
     <form action="/data/notes?goto=/" method="post">
-			<div><textarea name="body"></textarea></div>
-			<button type="submit">Create Note</button>
+        <div><textarea name="body"></textarea></div>
+        <div><select name="sharing">
+           <option value="private">Private</option>
+           <option value="public">Public</option>
+        </select></div>
+        <button type="submit">Create Note</button>
     </form>
 
 Simple! As mentioned above, all data is retrieved and modified through an HTTP interface. This means we can use a simple HTML form to create a new note.
@@ -79,12 +83,23 @@ You may add the Signup form on the same page by copying the login form and repla
 Previously we created a link to view a note. This will also be where we let users modify the note. Create a new page called `view` and add the following:
 
     {{ get /data/notes/_id/:params.id?single=true as note }}
+
+    {{ if note.sharing eq private }}
+        {{ if note._creator neq :session.user._id }}
+            {{ error This note is private }}
+        {{ / }}
+    {{ / }}
+
     <form action="/data/notes/_id/{{params.id}}?goto=/" method="post">
     <div><textarea name="body">{{note.body}}</textarea></div>
+    <div><select name="sharing">
+       <option value="private" selected>Private</option>
+       <option value="public">Public</option>
+    </select></div>
     <button type="submit">Update Note</button>
     </form>
 
-We make a request to get the note data for the note that was passed into the URL (through the `params` object). The query parameter `single=true` will return just the object instead of a one item collection.
+We make a request to get the note data for the note that was passed into the URL (through the `params` object). The query parameter `single=true` will return just the object instead of a one item collection. Next we check whether the note is private. If so throw an error if the user is not logged in or not the creator.
 
 This page requires a slightly complex route. We need to use a placeholder in the route so that `/view/anything` will still match the `view` page and store `anything` in a variable.
 
@@ -93,6 +108,16 @@ Create a route with the following:
 - Route: `/view/:id`, Page: `view`
 
 Now you can see where `params.id` comes from. `params` is an object for all placeholders in the route and the matched values.
+
+## Permissions
+
+The last important concept of Sproute is permissions. Permissions are just like routes where a requested URL matches a pattern but instead of pointing to a page, it validates against a required [user type](https://getsproute.com/docs/permissions#user-types).
+
+Click Permissions and add the following:
+
+- Method: `GET`, Route: `/data/notes`, User: `Owner`
+
+This will make sure the only notes listed will be ones the user has created.
 
 ## Firefox OS support
 
