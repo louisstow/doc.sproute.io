@@ -1,0 +1,82 @@
+<h1 id="building-a-persistent-notes-app-for-firefox-os">Building a persistent Notes app for Firefox OS</h1>
+<p>In this tutorial we will be building a notes app like Evernote, from scratch!</p>
+<p>A persistent notes app needs a place to store all the notes for a user (so no one else can read it). For this we will use my own backend solution called <a href="http://getsproute.com">Sproute</a>. Sproute is a hosted web framework for quickly building dynamic webapps.</p>
+<p>First <a href="http://getsproute.com/signup">create an account</a> with a unique subdomain then access the Dashboard through <code>http://&lt;mysubdomain&gt;.sproute.io/admin</code>.</p>
+<h2 id="models">Models</h2>
+<p>In Sproute there is a concept called Models. A model defines the dynamic data in our app with properties for data integrity. We will need a model called <code>notes</code> with the following fields:</p>
+<ul>
+<li><code>body</code>: Text, Required, Min: <code>1</code></li>
+<li><code>sharing</code>: Text, Values: <code>public, private</code>, Default: <code>private</code></li>
+</ul>
+<p>The <code>body</code> field will store the contents of the note. The <code>sharing</code> field will specify whether the note can be viewed by others (with a direct link) or just the owner. This is all the data we need to define, everything else is covered by <a href="http://getsproute.com/docs/rest#built-in-fields">built-in fields</a>.</p>
+<h2 id="list-notes">List notes</h2>
+<p>We need a way to list the available notes for a user. This can be done with Pages. A page is HTML with embedded <a href="http://getsproute.com/docs/pages">template tags</a> for retrieving and processing data.</p>
+<p>Open the <code>index</code> page. This is the home page when people view your space. We will list the notes here. Add the following:</p>
+<pre><code>{{ get /data/notes?sort=_lastModified,desc as notes }}</code></pre>
+<p>All data is retrieved through an <a href="http://getsproute.com/docs/rest">HTTP interface</a> so the <code>get</code> tag must take a URL. The request above is retrieving all notes for the logged in user and stores the results in a variable called <code>notes</code>. We use a query parameter to sort the results by last modified first (An underscore denotes a built-in field).</p>
+<p>Let's display each note in a list:</p>
+<pre><code>&lt;ul&gt;
+    {{ each notes as note }}
+        &lt;a href=&quot;/view/{{note._id}}&quot;&gt;
+        {{ word note.body 0 5 }}
+        &lt;/a&gt;
+    {{ / }}
+&lt;/ul&gt;</code></pre>
+<p>The <code>word</code> template tag will extract the first 5 words from the body content. We link to a not-yet-made page with the URL <code>/view/&lt;id&gt;</code>. <code>note._id</code> is a built-in unique identifier.</p>
+<h2 id="create-a-note">Create a note</h2>
+<p>Before creating the <code>view</code> page for a note, let's make a new page for creating a note. Create a new page called <code>create</code>. Add the following HTML:</p>
+<pre><code>&lt;form action=&quot;/data/notes?goto=/&quot; method=&quot;post&quot;&gt;
+        &lt;div&gt;&lt;textarea name=&quot;body&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
+        &lt;button type=&quot;submit&quot;&gt;Create Note&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>Simple! As mentioned above, all data is retrieved and modified through an HTTP interface. This means we can use a simple HTML form to create a new note.</p>
+<p>Because this is a new page we need to create a new route so the page is accessible. A route is a pattern for a requested URL that will render a page if matched. There will already be a route for the index page. Click Routes and create a new one with the following:</p>
+<ul>
+<li>Route: <code>/create</code>, Page: <code>create</code>.</li>
+</ul>
+<h2 id="user-login-and-registration">User login and registration</h2>
+<p>User accounts are built in to Sproute but we still need to create a Signup and Login page. Luckily this is also a simple HTML form so create a new page called <code>users</code> and add the following:</p>
+<pre><code>&lt;h2&gt;Login&lt;/h2&gt;
+&lt;form action=&quot;/api/login?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;label&gt;
+    &lt;div&gt;Username:&lt;/div&gt;
+    &lt;input type=&quot;text&quot; name=&quot;name&quot; /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+    &lt;div&gt;Password:&lt;/div&gt;
+    &lt;input type=&quot;password&quot; name=&quot;pass&quot; /&gt;
+&lt;/label&gt;
+&lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>You may add the Signup form on the same page by copying the login form and replace the action attribute to <code>/api/register</code>. The <code>goto</code> query parameter will redirect the user to that URL. Create two new routes with the following:</p>
+<ul>
+<li>Route: <code>/login</code>, Page: <code>users</code></li>
+<li>Route: <code>/register</code>, Page: <code>users</code></li>
+</ul>
+<h2 id="view-and-update-a-note">View and update a note</h2>
+<p>Previously we created a link to view a note. This will also be where we let users modify the note. Create a new page called <code>view</code> and add the following:</p>
+<pre><code>{{ get /data/notes/_id/:params.id?single=true as note }}
+&lt;form action=&quot;/data/notes/_id/{{params.id}}?goto=/&quot; method=&quot;post&quot;&gt;
+&lt;div&gt;&lt;textarea name=&quot;body&quot;&gt;{{note.body}}&lt;/textarea&gt;&lt;/div&gt;
+&lt;button type=&quot;submit&quot;&gt;Update Note&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>We make a request to get the note data for the note that was passed into the URL (through the <code>params</code> object). The query parameter <code>single=true</code> will return just the object instead of a one item collection.</p>
+<p>This page requires a slightly complex route. We need to use a placeholder in the route so that <code>/view/anything</code> will still match the <code>view</code> page and store <code>anything</code> in a variable.</p>
+<p>Create a route with the following:</p>
+<ul>
+<li>Route: <code>/view/:id</code>, Page: <code>view</code></li>
+</ul>
+<p>Now you can see where <code>params.id</code> comes from. <code>params</code> is an object for all placeholders in the route and the matched values.</p>
+<h2 id="firefox-os-support">Firefox OS support</h2>
+<p>Sproute can very easily support <a href="https://developer.mozilla.org/en-US/Marketplace/Publishing/Publish_options#Hosted_apps">hosted apps</a> on Firefox OS by creating a page with the <a href="https://developer.mozilla.org/en-US/Apps/Developing/Manifest">manifest JSON data</a> and the route: <code>/manifest.webapp</code>.</p>
+<p>Create a new page called <code>manifest</code> with the following:</p>
+<pre><code>{
+    &quot;name&quot;: &quot;{{name}}&quot;,
+    &quot;description&quot;: &quot;A persistent notes app&quot;,
+    &quot;launch_path&quot;: &quot;/&quot;,
+    &quot;icons&quot;: {
+        &quot;128&quot;: &quot;/absolute/path/to/icon&quot;
+    }
+}</code></pre>
+<p>Create a Route with the pattern <code>/manifest.webapp</code> pointing to the manifest page.</p>
+<p>We're done! Test this in the <a href="https://developer.mozilla.org/en-US/Firefox_OS/Using_the_App_Manager">app manager</a> by using the link to the manifest (<code>http://notes.sproute.io/manifest.webapp</code>).</p>

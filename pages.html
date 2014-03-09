@@ -101,6 +101,13 @@
 </ul>
 <p>Returns a text representation of the time elapsed from now. Read more in the <a href="http://momentjs.com/docs/#/displaying/fromnow/">Moment docs</a>.</p>
 <pre><code>{{ ago :row._created }}</code></pre>
+<h3 id="word-variable-start-offset">{{ word &lt;variable&gt; &lt;start&gt; &lt;offset&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable containing text content to splice.</li>
+</ul>
+<p>Will split the text variable by words and print based on the start index until the offset.</p>
+<pre><code>First 10 words from article:
+{{ word :row.body 0 10 }}</code></pre>
 <h3 id="include-file">{{ include &lt;file&gt; }}</h3>
 <ul>
 <li><code>file</code>: Include a text-file into the page.</li>
