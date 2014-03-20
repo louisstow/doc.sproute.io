@@ -1,17 +1,17 @@
 # Building a persistent Notes app for Firefox OS
 
-In this tutorial we will be building a notes app like Evernote, from scratch!
+In this tutorial we will be building a notes app (like Evernote) from scratch and deploy it to Firefox OS!
 
 A persistent notes app needs a place to store all the notes for a user (so no one else can read it). For this we will use my own backend solution called [Sproute](http://getsproute.com). Sproute is a hosted web framework for quickly building dynamic webapps.
 
-First [create an account](http://getsproute.com/signup) with a unique subdomain then access the Dashboard through `http://<mysubdomain>.sproute.io/admin`.
+First [create an account](http://getsproute.com/signup) with a unique subdomain then access the Dashboard through `http://<mysubdomain>.sproute.io/admin`. You must login with the same details used to signup to Sprotue.
 
 ## Models
 
-In Sproute there is a concept called Models. A model defines the dynamic data in our app with properties for data integrity. We will need a model called `notes` with the following fields:
+In Sproute there is a concept called [Models](http://getsproute.com/docs/models). A model defines the dynamic data in our app with properties for data integrity. We will need a model called `notes` with the following fields:
 
 - `body`: Text, Required, Min: `1`
-- `sharing`: Text, Values: `public, private`, Default: `private`
+- `sharing`: Text, Allowed Values: `public, private`, Default Value: `private`
 
 The `body` field will store the contents of the note. The `sharing` field will specify whether the note can be viewed by others (with a direct link) or just the owner. This is all the data we need to define, everything else is covered by [built-in fields](http://getsproute.com/docs/rest#built-in-fields).
 
@@ -21,9 +21,9 @@ We need a way to list the available notes for a user. This can be done with Page
 
 Open the `index` page. This is the home page when people view your space. We will list the notes here. Add the following: 
 
-    {{ get /data/notes?sort=_lastModified,desc as notes }}
+    {{ get /data/notes?sort=_lastUpdated,desc as notes }}
 
-All data is retrieved through an [HTTP interface](http://getsproute.com/docs/rest) so the `get` tag must take a URL. The request above is retrieving all notes for the logged in user and stores the results in a variable called `notes`. We use a query parameter to sort the results by last modified first (An underscore denotes a built-in field).
+All data is retrieved through an [HTTP interface](http://getsproute.com/docs/rest) so the `{{ get }}` tag must take a URL. The request above is retrieving all notes for the logged in user and stores the results in a variable called `notes`. We use a query parameter to sort the results by last modified first (An underscore denotes a built-in field).
 
 Let's display each note in a list:
 
@@ -35,7 +35,7 @@ Let's display each note in a list:
         {{ / }}
     </ul>
 
-The `word` template tag will extract the first 5 words from the body content. We link to a not-yet-made page with the URL `/view/<id>`. `note._id` is a built-in unique identifier.
+The `{{ word }}` template tag will extract the first 5 words from the body content. We link to a not-yet-made page with the URL `/view/<id>`. `note._id` is a built-in unique identifier.
 
 ## Create a note
 
@@ -50,15 +50,15 @@ Before creating the `view` page for a note, let's make a new page for creating a
         <button type="submit">Create Note</button>
     </form>
 
-Simple! As mentioned above, all data is retrieved and modified through an HTTP interface. This means we can use a simple HTML form to create a new note.
+Simple! As mentioned above, all data is retrieved and modified through an HTTP interface. This means we can use a simple HTML form to create a new note. The `goto` query parameter will redirect the user to that URL.
 
-Because this is a new page we need to create a new route so the page is accessible. A route is a pattern for a requested URL that will render a page if matched. There will already be a route for the index page. Click Routes and create a new one with the following:
+Because this is a new page we need to create a new route so the page is accessible. A [route](http://getsproute.com/docs/routes) is a pattern for a requested URL that will render a page if matched. There will already be a route for the index page. Click Routes and create a new one with the following:
 
 - Route: `/create`, Page: `create`.
 
 ## User login and registration
 
-User accounts are built in to Sproute but we still need to create a Signup and Login page. Luckily this is also a simple HTML form so create a new page called `users` and add the following:
+User accounts are built into Sproute but we still need to create a Register and Login page. Thankfully this is also a simple HTML form so create a new page called `users` and add the following:
 
     <h2>Login</h2>
     <form action="/api/login?goto=/" method="post">
@@ -73,7 +73,7 @@ User accounts are built in to Sproute but we still need to create a Signup and L
     <button type="submit">Login</button>
     </form>
 
-You may add the Signup form on the same page by copying the login form and replace the action attribute to `/api/register`. The `goto` query parameter will redirect the user to that URL. Create two new routes with the following:
+You may add the Register form on the same page by copying the login form and replace the action attribute to `/api/register`. Create two new routes with the following:
 
 - Route: `/login`, Page: `users`
 - Route: `/register`, Page: `users`
@@ -111,14 +111,14 @@ Now you can see where `params.id` comes from. `params` is an object for all plac
 
 ## Permissions
 
-The last important concept of Sproute is permissions. Permissions are just like routes where a requested URL matches a pattern but instead of pointing to a page, it validates against a required [user type](https://getsproute.com/docs/permissions#user-types).
+The last important concept of Sproute is [permissions](http://getsproute.com/docs/permissions). Permissions are just like routes where a requested URL matches a pattern but instead of pointing to a page, it validates against a required [user type](https://getsproute.com/docs/permissions#user-types).
 
 Click Permissions and add the following:
 
 - Method: `GET`, Route: `/data/notes`, User: `Owner`
 - Method: `GET`, Route: `/data/notes/*`, User: `Owner`
 
-This will make sure the only notes listed will be ones the user has created. Because of the second permission, we needed to run the `{{ get }}` request as `admin` otherwise it would fail for everyone (except for admins and the creator) even if the note is public.
+This will make sure the only notes listed will be ones the user has created (i.e. the owner). Because of the second permission, we needed to run the `{{ get }}` request as `admin` otherwise it would fail for everyone (except for admins and the creator) even if the note is public.
 
 ## Firefox OS support
 
