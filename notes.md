@@ -29,9 +29,9 @@ Let's display each note in a list:
 
     <ul>
         {{ each notes as note }}
-            <a href="/view/{{note._id}}">
+            <li><a href="/view/{{note._id}}">
             {{ word note.body 0 5 }}
-            </a>
+            </a></li>
         {{ / }}
     </ul>
 
@@ -82,7 +82,7 @@ You may add the Signup form on the same page by copying the login form and repla
 
 Previously we created a link to view a note. This will also be where we let users modify the note. Create a new page called `view` and add the following:
 
-    {{ get /data/notes/_id/:params.id?single=true as note }}
+    {{ get /data/notes/_id/:params.id?single=true admin as note }}
 
     {{ if note.sharing eq private }}
         {{ if note._creator neq :session.user._id }}
@@ -99,7 +99,7 @@ Previously we created a link to view a note. This will also be where we let user
     <button type="submit">Update Note</button>
     </form>
 
-We make a request to get the note data for the note that was passed into the URL (through the `params` object). The query parameter `single=true` will return just the object instead of a one item collection. Next we check whether the note is private. If so throw an error if the user is not logged in or not the creator.
+We make a request to get the note data for the note that was passed into the URL (through the `params` object). The query parameter `single=true` will return just the object instead of a one item collection. `admin` will run the request with the specified user-type. Next we check whether the note is private. If so throw an error if the user is not the creator.
 
 This page requires a slightly complex route. We need to use a placeholder in the route so that `/view/anything` will still match the `view` page and store `anything` in a variable.
 
@@ -116,8 +116,9 @@ The last important concept of Sproute is permissions. Permissions are just like 
 Click Permissions and add the following:
 
 - Method: `GET`, Route: `/data/notes`, User: `Owner`
+- Method: `GET`, Route: `/data/notes/*`, User: `Owner`
 
-This will make sure the only notes listed will be ones the user has created.
+This will make sure the only notes listed will be ones the user has created. Because of the second permission, we needed to run the `{{ get }}` request as `admin` otherwise it would fail for everyone (except for admins and the creator) even if the note is public.
 
 ## Firefox OS support
 
@@ -126,7 +127,7 @@ Sproute can very easily support [hosted apps](https://developer.mozilla.org/en-U
 Create a new page called `manifest` with the following:
 
     {
-        "name": "{{name}}",
+        "name": "{{self.name}}",
         "description": "A persistent notes app",
         "launch_path": "/",
         "icons": {

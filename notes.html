@@ -17,9 +17,9 @@
 <p>Let's display each note in a list:</p>
 <pre><code>&lt;ul&gt;
     {{ each notes as note }}
-        &lt;a href=&quot;/view/{{note._id}}&quot;&gt;
+        &lt;li&gt;&lt;a href=&quot;/view/{{note._id}}&quot;&gt;
         {{ word note.body 0 5 }}
-        &lt;/a&gt;
+        &lt;/a&gt;&lt;/li&gt;
     {{ / }}
 &lt;/ul&gt;</code></pre>
 <p>The <code>word</code> template tag will extract the first 5 words from the body content. We link to a not-yet-made page with the URL <code>/view/&lt;id&gt;</code>. <code>note._id</code> is a built-in unique identifier.</p>
@@ -59,7 +59,7 @@
 </ul>
 <h2 id="view-and-update-a-note">View and update a note</h2>
 <p>Previously we created a link to view a note. This will also be where we let users modify the note. Create a new page called <code>view</code> and add the following:</p>
-<pre><code>{{ get /data/notes/_id/:params.id?single=true as note }}
+<pre><code>{{ get /data/notes/_id/:params.id?single=true admin as note }}
 
 {{ if note.sharing eq private }}
     {{ if note._creator neq :session.user._id }}
@@ -75,7 +75,7 @@
 &lt;/select&gt;&lt;/div&gt;
 &lt;button type=&quot;submit&quot;&gt;Update Note&lt;/button&gt;
 &lt;/form&gt;</code></pre>
-<p>We make a request to get the note data for the note that was passed into the URL (through the <code>params</code> object). The query parameter <code>single=true</code> will return just the object instead of a one item collection. Next we check whether the note is private. If so throw an error if the user is not logged in or not the creator.</p>
+<p>We make a request to get the note data for the note that was passed into the URL (through the <code>params</code> object). The query parameter <code>single=true</code> will return just the object instead of a one item collection. <code>admin</code> will run the request with the specified user-type. Next we check whether the note is private. If so throw an error if the user is not the creator.</p>
 <p>This page requires a slightly complex route. We need to use a placeholder in the route so that <code>/view/anything</code> will still match the <code>view</code> page and store <code>anything</code> in a variable.</p>
 <p>Create a route with the following:</p>
 <ul>
@@ -87,13 +87,14 @@
 <p>Click Permissions and add the following:</p>
 <ul>
 <li>Method: <code>GET</code>, Route: <code>/data/notes</code>, User: <code>Owner</code></li>
+<li>Method: <code>GET</code>, Route: <code>/data/notes/*</code>, User: <code>Owner</code></li>
 </ul>
-<p>This will make sure the only notes listed will be ones the user has created.</p>
+<p>This will make sure the only notes listed will be ones the user has created. Because of the second permission, we needed to run the <code>{{ get }}</code> request as <code>admin</code> otherwise it would fail for everyone (except for admins and the creator) even if the note is public.</p>
 <h2 id="firefox-os-support">Firefox OS support</h2>
 <p>Sproute can very easily support <a href="https://developer.mozilla.org/en-US/Marketplace/Publishing/Publish_options#Hosted_apps">hosted apps</a> on Firefox OS by creating a page with the <a href="https://developer.mozilla.org/en-US/Apps/Developing/Manifest">manifest JSON data</a> and the route: <code>/manifest.webapp</code>.</p>
 <p>Create a new page called <code>manifest</code> with the following:</p>
 <pre><code>{
-    &quot;name&quot;: &quot;{{name}}&quot;,
+    &quot;name&quot;: &quot;{{self.name}}&quot;,
     &quot;description&quot;: &quot;A persistent notes app&quot;,
     &quot;launch_path&quot;: &quot;/&quot;,
     &quot;icons&quot;: {
