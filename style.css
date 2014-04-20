@@ -13,16 +13,21 @@ a {
 }
 
 #header {
-	width: 25%;
+	width: 300px;
 	position: fixed;
 	left: 0;
 	top: 0;
 	bottom: 0;
 	overflow: auto;
 	padding: 0 10px;
-	box-sizing: border-box;
+	
 	border-right: 1px solid #666;
 	line-height: 1.2em;
+	min-width: 100px;
+
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 }
 
 #header a {
@@ -58,17 +63,22 @@ a {
 	font-size: 1.2em;
 	display: block;
 	padding: 5px 0;
+
 }
 
 #nav a.lvl3 {
 	font-size: 0.9em;
 	padding-left: 15px;
+	display: block;
 }
 
 #content {
 	box-sizing: border-box;
-	width: 75%;
-	margin-left: 25%;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	
+	
+	margin-left: 300px;
 	padding: 20px;
 	line-height: 1.3em;
 }
@@ -93,6 +103,10 @@ a {
 	content: "- ";
 	color: #666;
 	font-weight: 100;
+}
+
+#content ul li {
+	margin: 10px 0;
 }
 
 #content p {
@@ -134,6 +148,7 @@ pre {
 	margin: 20px 0 0 0;
 	color: #444;
 	background-color: #f5f5f5;
+	overflow: auto;
 }
 
 pre code {
@@ -141,6 +156,7 @@ pre code {
 	padding: 0;
 	border: 0;
 	font-size: 13px;
+
 }
 
 p > em {
@@ -184,4 +200,27 @@ p > em {
 
 .value {
 	color: rgb(0, 26, 219);
+}
+
+#top {
+	position: fixed;
+	right: 15px;
+	top: 0px;
+	background: rgba(255,255,255,0.6);
+	padding: 10px;
+}
+
+#top a { text-decoration: none }
+
+@media only screen and (max-width: 580px) {
+	#header {
+		position: static;
+		width: 100%;
+		border-bottom: 2px solid #222;
+	}
+
+	#content {
+		width: 100%;
+		margin: 0;
+	}
 }

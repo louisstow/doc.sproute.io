@@ -9,7 +9,8 @@
 <h1><a href="#">Sproute Doc</a></h1>
 <div id="nav"></div>
 </div>
-<div id="content"><p class="lead">Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a Reddit app or watch the Getting Started video.</p>
+<div id="content">
+	<div id="top"><a href="#">Top &uparrow;</a></div><p class="lead">Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a Reddit app or watch the Getting Started video.</p>
 
 <h1 id="pages">Pages</h1>
 <p>A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables. To render a page you need a matching <a href="#routes">route</a> to point to the page.</p>
@@ -208,6 +209,12 @@
 <li><code>name</code>: Name of the space.</li>
 <li><code>method</code>: HTTP method making the request.</li>
 </ul>
+<h1 id="routes">Routes</h1>
+<p>A route is the starting point from a URL to rendering a page. It is a pattern to match a request and if matched will render the page specified.</p>
+<p>The requested URL <code>/items/342/</code> will match the route <code>/items/:id/</code>.</p>
+<p>Using a placeholder in the route (<code>:id</code>) means anything between the slashes will match the route and the value will be stored in the <code>params</code> object with the key <code>id</code>.</p>
+<p>An astericks <code>*</code> can be used as a wildcard to make a route match without using it's value in a parameter. This is mostly useful for namespacing parts of your application, for instance <code>/admin/*</code> matches every URL with <code>/admin/</code> at the start e.g. <code>/admin/users/</code>.</p>
+<p>When a requested URL matches a route, it render the page specified. The page will have access to information about the request such as any query parameters (<code>/?queryParam=value</code>), or placeholders in a route. The variables are accessible under <code>query</code> and <code>param</code> respectively.</p>
 <h1 id="models">Models</h1>
 <p>Most web applications need persistant data to store things like users, articles, status updates or messages. Sproute makes that incredibly simple. All data is created and retrieved through an <a href="#http-interface">HTTP interface</a>, better known as REST.</p>
 <p>The way data is stored in Sproute applications is similar to a relational database. You have a <strong>model</strong> which is similar to a table. Inside a model there are <strong>fields</strong>. A field has some properties to ensure data integrity.</p>
@@ -236,12 +243,6 @@
     { &quot;message&quot;: &quot;Name: exceeded maximum length of 5 characters, got 9.&quot; },
     { &quot;message&quot;: &quot;Role: value (cheese) did not exist in [admin, member].&quot; }
 ]</code></pre>
-<h1 id="routes">Routes</h1>
-<p>A route is the starting point from a URL to rendering a page. It is a pattern to match a request and if matched will render the page specified.</p>
-<p>The requested URL <code>/items/342/</code> will match the route <code>/items/:id/</code>.</p>
-<p>Using a placeholder in the route (<code>:id</code>) means anything between the slashes will match the route and the value will be stored in the <code>params</code> object with the key <code>id</code>.</p>
-<p>An astericks <code>*</code> can be used as a wildcard to make a route match without using it's value in a parameter. This is mostly useful for namespacing parts of your application, for instance <code>/admin/*</code> matches every URL with <code>/admin/</code> at the start e.g. <code>/admin/users/</code>.</p>
-<p>When a requested URL matches a route, it render the page specified. The page will have access to information about the request such as any query parameters (<code>/?queryParam=value</code>), or placeholders in a route. The variables are accessible under <code>query</code> and <code>param</code> respectively.</p>
 <h1 id="http-interface">HTTP Interface</h1>
 <p>After defining your data in <a href="#models">models</a> you need to be able to interact and create the data. This is done through an HTTP interface.</p>
 <p>All URLs to access and modify models are under the URL <code>/data/&lt;model&gt;/</code>.</p>
