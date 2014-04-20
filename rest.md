@@ -1,6 +1,6 @@
 # HTTP Interface
 
-After defining your data in [models](/docs/models) you need to be able to interact and create the data. This is done through an HTTP interface.
+After defining your data in [models](#models) you need to be able to interact and create the data. This is done through an HTTP interface.
 
 All URLs to access and modify models are under the URL `/data/<model>/`.
 

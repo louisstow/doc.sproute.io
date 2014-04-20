@@ -1,6 +1,6 @@
 # Models
 
-Most web applications need persistant data to store things like users, articles, status updates or messages. Sproute makes that incredibly simple. All data is created and retrieved through an [HTTP interface](/docs/rest), better known as REST.
+Most web applications need persistant data to store things like users, articles, status updates or messages. Sproute makes that incredibly simple. All data is created and retrieved through an [HTTP interface](#http-interface), better known as REST.
 
 The way data is stored in Sproute applications is similar to a relational database. You have a **model** which is similar to a table. Inside a model there are **fields**. A field has some properties to ensure data integrity.
 
@@ -37,11 +37,11 @@ Ensure that no duplicate values of this field can exist in the model. This is us
 
 Allows you to specific which type of users can read or write the data in the field.
 
-User types are explained in more detail under [permissions](/docs/permissions).
+User types are explained in more detail under [permissions](#permissions).
 
 ## Handling Errors
 
-If the data provided causes an error on the above properties, the request will not go through and will instead return a JSON list of errors. You may also render a page with the error object by specifying an error page in the [config](/docs/config#error-view).
+If the data provided causes an error on the above properties, the request will not go through and will instead return a JSON list of errors. You may also render a page with the error object by specifying an error page in the [Settings](#error-view).
 
 The returned object will be an array of error objects for each error that occured containing a `message` field explaining the issue.
 

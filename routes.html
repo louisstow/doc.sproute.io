@@ -1,6 +1,0 @@
-<h1 id="routes">Routes</h1>
-<p>A route is the starting point from a URL to rendering a page. It is a pattern to match a request and if matched will render the page specified.</p>
-<p>The requested URL <code>/items/342/</code> will match the route <code>/items/:id/</code>.</p>
-<p>Using a placeholder in the route (<code>:id</code>) means anything between the slashes will match the route and the value will be stored in the <code>params</code> object with the key <code>id</code>.</p>
-<p>An astericks <code>*</code> can be used as a wildcard to make a route match without using it's value in a parameter. This is mostly useful for namespacing parts of your application, for instance <code>/admin/*</code> matches every URL with <code>/admin/</code> at the start e.g. <code>/admin/users/</code>.</p>
-<p>When a requested URL matches a route, it render the page specified. The page will have access to information about the request such as any query parameters (<code>/?queryParam=value</code>), or placeholders in a route. The variables are accessible under <code>query</code> and <code>param</code> respectively.</p>

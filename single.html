@@ -1,0 +1,465 @@
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<link href="./style.css" rel="stylesheet" />
+</head>
+<body>
+
+<div id="header">
+<h1><a href="#">Sproute Doc</a></h1>
+<div id="nav"></div>
+</div>
+<div id="content"><p class="lead">Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a Reddit app or watch the Getting Started video.</p>
+
+<h1 id="pages">Pages</h1>
+<p>A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables. To render a page you need a matching <a href="#routes">route</a> to point to the page.</p>
+<p>Template tags are wrapped with two curly braces starting with <code>{{</code> and ending with <code>}}</code>.</p>
+<p>When you want to evaluate a variable inside a tag, use either a colon at the start <code>:myVariable</code>, or wrap the variable in a dollar sign and two parenthesis <code>$(myVariable)</code>. Some tags will automatically evaluate the variable like <code>if</code> and <code>set</code> or when documented as <code>&lt;variable&gt;</code>.</p>
+<h2 id="tags">Tags</h2>
+<h3 id="get-url-role-as-variable">{{ get &lt;url&gt; [&lt;role&gt;] as &lt;variable&gt; }}</h3>
+<ul>
+<li><code>url</code>: URL to retrieve data from the database.</li>
+<li><code>role</code>: Role of the user to make the GET request as (optional).</li>
+<li><code>variable</code>: Save the data in the variable provided.</li>
+</ul>
+<p>Retrieve data from the database through the <a href="#GET">HTTP interface</a>. The result is placed in the variable you provide after <code>as</code>.</p>
+<p>You may optionally provide a <a href="#user-types">user type</a> to make the request as a different role if the logged in user would otherwise not be able to complete.</p>
+<p><em>Note: This will not work for every URL, only paths to the <a href="#http-interface">HTTP interface</a>.</em></p>
+<pre><code>{{ get /data/articles/ as articles }}
+{{ each articles as article }}
+    &lt;h1&gt;{{article.title}}&lt;/h1&gt;
+    {{article.body}}
+{{ /each }}</code></pre>
+<h3 id="post-url-data-role-as-variable">{{ post &lt;url&gt; &lt;data&gt; [&lt;role&gt;] as &lt;variable&gt; }}</h3>
+<ul>
+<li><code>url</code>: URL to store data in the database.</li>
+<li><code>data</code>: Name of the object variable with the data to store.</li>
+<li><code>role</code>: Role of the user to make the GET request as (optional).</li>
+<li><code>variable</code>: Save the response in the variable provided.</li>
+</ul>
+<p>Store data in the database through the <a href="#POST">HTTP interface</a>. The result is placed in the variable you provide after <code>as</code>.</p>
+<p>With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a <a href="#user-types">user type</a>. This is useful for creating pages that require special logic or processing before storing the data.</p>
+<p><em>Note: This will not work for every URL, only paths to the <a href="#http-interface">HTTP interface</a>.</em></p>
+<pre><code>{{ set data.title Hello }}
+{{ set data.body Goodbye }}
+{{ post /data/articles/ data admin as articles }}</code></pre>
+<h3 id="each-collection-as-variable">{{ each &lt;collection&gt; as &lt;variable&gt; }}</h3>
+<ul>
+<li><code>collection</code>: List of data to iterate through.</li>
+<li><code>variable</code>: Name of the variable containing each item.</li>
+</ul>
+<p>Iterate over a list of data. Usually you will use this with the <code>get</code> tag which will retrieve the data as a list. Everything inside the <code>each</code> block will be repeated for each of the elements in the collection.</p>
+<h3 id="if-variable-operator-value">{{ if &lt;variable&gt; &lt;operator&gt; &lt;value&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable to test.</li>
+<li><code>operator</code>: Operator for expression. See list below.</li>
+<li><code>value</code>: Value to test.</li>
+</ul>
+<p>Use this tag to only evaluate nested tags and HTML based on an expression.</p>
+<p>Available operators:</p>
+<ul>
+<li><code>eq</code>, <code>=</code>: Variable <strong>equals</strong> value.</li>
+<li><code>gt</code>, <code>&gt;</code>: Variable is <strong>greater</strong> than value.</li>
+<li><code>lt</code>, <code>&lt;</code>: Variable is <strong>less</strong> than value.</li>
+<li><code>gte</code>, <code>&gt;=</code>: Variable is <strong>greater than or equal</strong> to value.</li>
+<li><code>lte</code>, <code>&lt;=</code>: Variable is <strong>less than or equal</strong> to value.</li>
+<li><code>neq</code>, <code>!=</code>: Variable is <strong>not equal</strong> to value.</li>
+</ul>
+<pre><code>{{ if articles.length gt 0 }}
+    &lt;p&gt;List of articles&lt;/p&gt;
+{{ /if }}</code></pre>
+<h3 id="unless-variable-operator-value">{{ unless &lt;variable&gt; &lt;operator&gt; &lt;value&gt; }}</h3>
+<p>Same as <code>if</code> but negated.</p>
+<h3 id="else">{{ else }}</h3>
+<p>Use this tag in conjuction with <code>if</code>. If the expression is not true, tags nested in the else will be evaluated instead.</p>
+<pre><code>{{ if articles.length gt 0 }}
+    &lt;p&gt;List of articles&lt;/p&gt;
+{{ else }}
+    &lt;p&gt;No articles found!&lt;/p&gt;
+{{ /if }}</code></pre>
+<h3 id="set-variable-value">{{ set &lt;variable&gt; &lt;value&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable to set a value.</li>
+<li><code>value</code>: Value to set the variable to.</li>
+</ul>
+<p>Set a variable to a value. If the variable contains a dot <code>.</code> the name before the dot will be turned into an object with whatever property comes after the dot. If the property name needs to contain a dot, you can wrap the name in double-quotes.</p>
+<pre><code>{{ set pageTitle This is the title of my website }}
+&lt;title&gt;{{pageTitle}}&lt;/title&gt;
+
+{{ set obj.property 1 }}
+{{ set obj.a.very.deep.property 2 }}
+{{ set obj.&quot;property.with.dot&quot; 3 }}
+{{ debug obj }}</code></pre>
+<h3 id="array-variable">{{ array &lt;variable&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable to convert to an array.</li>
+</ul>
+<p>Convert an object into an array. The object must contain numeric keys which will turn into the array indexes. If the object has no <code>length</code> property, one will be generated by the number of keys.</p>
+<pre><code>{{ set obj.0 First }}
+{{ set obj.1 Second }}
+{{ array obj }}
+{{ debug obj }}</code></pre>
+<h3 id="expr-variable-expr">{{ expr &lt;variable&gt; &lt;expr&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable to store the result of the expression.</li>
+<li><code>expr</code>: Mathematical expression.</li>
+</ul>
+<p>This is a slightly advanced function to perform calculations. The result of the expression is stored in the variable provided.</p>
+<p>See the <a href="http://mathjs.org">MathJS</a> docs for more information about available operators and Math functions.</p>
+<pre><code>{{ expr score :article.thumbsUp - :article.thumbsDown }}
+{{ score }}</code></pre>
+<h3 id="date-date-format">{{ date &lt;date&gt; &lt;format&gt; }}</h3>
+<ul>
+<li><code>date</code>: The date to format in UNIX timestamp form.</li>
+<li><code>format</code>: A special string to format a date</li>
+</ul>
+<p>Uses the <a href="http://momentjs.com/docs/#/displaying/format/">Moment</a> library to take a UNIX timestamp and format it. Every row in a model has a <code>_created</code> field that can be formatted.</p>
+<pre><code>{{ each rows as row }}
+    {{ date :row._created h:mma }}
+{{ / }}</code></pre>
+<h3 id="ago-date">{{ ago &lt;date&gt; }}</h3>
+<ul>
+<li><code>date</code>: The date as a UNIX timestamp.</li>
+</ul>
+<p>Returns a text representation of the time elapsed from now. Read more in the <a href="http://momentjs.com/docs/#/displaying/fromnow/">Moment docs</a>.</p>
+<pre><code>{{ ago :row._created }}</code></pre>
+<h3 id="word-variable-start-offset">{{ word &lt;variable&gt; &lt;start&gt; &lt;offset&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable containing text content to splice.</li>
+</ul>
+<p>Will split the text variable by words and print based on the start index until the offset.</p>
+<pre><code>First 10 words from article:
+{{ word :row.body 0 10 }}</code></pre>
+<h3 id="include-file">{{ include &lt;file&gt; }}</h3>
+<ul>
+<li><code>file</code>: Include a text-file into the page.</li>
+</ul>
+<p>Include and evaluate another page. Can also be plain HTML. Will only search in the current directory.</p>
+<p><code>{{ #include }}</code> will do the same but will not evaluate the template tags.</p>
+<pre><code>{{ include header.sprt }}
+&lt;p&gt;Body content&lt;/p&gt;
+{{ include footer.sprt }}</code></pre>
+<h3 id="variable">{{ &lt;variable&gt; }}</h3>
+<p>Will replace the tag with the variable contents in the HTML rendered. By default the value will replace all HTML with HTML entities (<code>&lt;</code> is replaced with <code>&amp;amp;lt;</code>). This is for security reasons to prevent XSS where users can inject JavaScript into your webpage.</p>
+<p><code>{{ #&lt;variable&gt; }}</code> will do the same but will not escape the HTML. This should only be used if the data is trusted, such as if an administrator created it.</p>
+<pre><code>&lt;p&gt;{{myVar}}&lt;/p&gt;</code></pre>
+<h3 id="section">{{ / }}</h3>
+<p>Required to close open tags such as <code>if</code> and <code>each</code>. You may put any text after the backslash to help remember which tag it's closing.</p>
+<pre><code>{{ if someExpression }}
+
+{{ /I can be anything }}</code></pre>
+<h3 id="redirect-url">{{ redirect &lt;url&gt; }}</h3>
+<ul>
+<li><code>url</code>: Path to redirect to.</li>
+</ul>
+<p>Will stop all processing of the page and redirect the user to the path specified.</p>
+<pre><code>{{ unless session.user }}
+    {{ redirect /login }}
+{{ / }}</code></pre>
+<h3 id="debug-variable">{{ debug &lt;variable&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable to print.</li>
+</ul>
+<p>Print all the properties and values on a variable. Runs <code>JSON.stringify</code> on the provided variable and wraps it in <code>&lt;pre&gt;</code> tags.</p>
+<pre><code>{{ debug self }}</code></pre>
+<h3 id="error-message">{{ error &lt;message&gt; }}</h3>
+<ul>
+<li><code>message</code>: Error message to display.</li>
+</ul>
+<p>Stop processing the page and respond to the user with a <code>500</code> code and a JSON string of the error. You can render a page instead of a JSON string by changing the Error View to an error page in Config.</p>
+<pre><code>{{ error Page could not be displayed }}</code></pre>
+<h3 id="json-variable">{{ json &lt;variable&gt; }}</h3>
+<ul>
+<li><code>variable</code>: Variable to respond as JSON.</li>
+</ul>
+<p>Stop processing the page and respond to the user with a JSON string of the variable passed. Will serve with Content-Type <code>application/json</code>.</p>
+<pre><code>{{ set myobj.x 1 }}
+{{ set myobj.y 2 }}
+{{ set myobj.z 3 }}
+{{ json myobj }}</code></pre>
+<h3 id="escaping-the-tag">Escaping the tag</h3>
+<p>If you actually want two curly braces in your page without it being a tag, you can use an HTML entity (<code>&amp;amp;#123;</code>) or put a forwardslash before the tag <code>\{{</code>.</p>
+<h2 id="global-variables">Global Variables</h2>
+<p>When rendering a page, you have access to a variety of variables.</p>
+<h3 id="params">params</h3>
+<p>This object contains the placeholders specified from the <a href="#routes">routes</a>.</p>
+<h3 id="query">query</h3>
+<p>URLs can have query variables (e.g. <code>?queryOption=hi</code>). You can access this through the <code>query</code> object.</p>
+<pre><code>{{ query.name }}</code></pre>
+<p><em>Alias: <code>$_GET</code></em></p>
+<h3 id="form">form</h3>
+<p>Pages can have data posted to it. This post data is found under the <code>form</code> object.</p>
+<pre><code>{{ if form }}
+    {{ debug form }}
+{{ / }}</code></pre>
+<p><em>Alias: <code>$_POST</code></em></p>
+<h3 id="headers">headers</h3>
+<p>All the request headers sent to the page in lower-case.</p>
+<pre><code>{{ if headers.referer }}
+    {{ redirect :headers.referer }}
+{{ / }}</code></pre>
+<h3 id="session">session</h3>
+<p>The built-in user accounts are attached to the session object. You will mainly be using the user account at <code>session.user</code>. This contains the entire logged in user object. If the user is not logged-in this value will be empty.</p>
+<h3 id="self">self</h3>
+<p>Assorted variables are contained in the <code>self</code> object.</p>
+<ul>
+<li><code>url</code>: The requested URL being rendered.</li>
+<li><code>dir</code>: Directory of the page being rendered.</li>
+<li><code>name</code>: Name of the space.</li>
+<li><code>method</code>: HTTP method making the request.</li>
+</ul>
+<h1 id="models">Models</h1>
+<p>Most web applications need persistant data to store things like users, articles, status updates or messages. Sproute makes that incredibly simple. All data is created and retrieved through an <a href="#http-interface">HTTP interface</a>, better known as REST.</p>
+<p>The way data is stored in Sproute applications is similar to a relational database. You have a <strong>model</strong> which is similar to a table. Inside a model there are <strong>fields</strong>. A field has some properties to ensure data integrity.</p>
+<h2 id="properties">Properties</h2>
+<h3 id="type">Type</h3>
+<p>Use this to ensure the type of the data in the field. Available values are <code>String</code>, <code>Boolean</code> and <code>Number</code>.</p>
+<h3 id="min">Min</h3>
+<p>Minimum length of the value if it is a string. Minimum value if a Number.</p>
+<h3 id="max">Max</h3>
+<p>Maximum length of the value if it is a string. Maximum value if a Number.</p>
+<h3 id="allowed-values">Allowed Values</h3>
+<p>If the field can only have a specific set of values, include them in this list seperated by spaces. Whenever a field is updated or inserted it will ensure the value is one of those specified.</p>
+<h3 id="default-value">Default Value</h3>
+<p>If the field is <em>not</em> required and <em>doesn't</em> have a value, use this default value.</p>
+<h3 id="required">Required</h3>
+<p>Ensure the field has a value upon insertion or error.</p>
+<h3 id="unique">Unique</h3>
+<p>Ensure that no duplicate values of this field can exist in the model. This is useful for things like usernames where a user must have a unique name.</p>
+<h3 id="readwrite-access">Read/Write Access</h3>
+<p>Allows you to specific which type of users can read or write the data in the field.</p>
+<p>User types are explained in more detail under <a href="#permissions">permissions</a>.</p>
+<h2 id="handling-errors">Handling Errors</h2>
+<p>If the data provided causes an error on the above properties, the request will not go through and will instead return a JSON list of errors. You may also render a page with the error object by specifying an error page in the <a href="#error-view">Settings</a>.</p>
+<p>The returned object will be an array of error objects for each error that occured containing a <code>message</code> field explaining the issue.</p>
+<pre><code>[
+    { &quot;message&quot;: &quot;Name: exceeded maximum length of 5 characters, got 9.&quot; },
+    { &quot;message&quot;: &quot;Role: value (cheese) did not exist in [admin, member].&quot; }
+]</code></pre>
+<h1 id="routes">Routes</h1>
+<p>A route is the starting point from a URL to rendering a page. It is a pattern to match a request and if matched will render the page specified.</p>
+<p>The requested URL <code>/items/342/</code> will match the route <code>/items/:id/</code>.</p>
+<p>Using a placeholder in the route (<code>:id</code>) means anything between the slashes will match the route and the value will be stored in the <code>params</code> object with the key <code>id</code>.</p>
+<p>An astericks <code>*</code> can be used as a wildcard to make a route match without using it's value in a parameter. This is mostly useful for namespacing parts of your application, for instance <code>/admin/*</code> matches every URL with <code>/admin/</code> at the start e.g. <code>/admin/users/</code>.</p>
+<p>When a requested URL matches a route, it render the page specified. The page will have access to information about the request such as any query parameters (<code>/?queryParam=value</code>), or placeholders in a route. The variables are accessible under <code>query</code> and <code>param</code> respectively.</p>
+<h1 id="http-interface">HTTP Interface</h1>
+<p>After defining your data in <a href="#models">models</a> you need to be able to interact and create the data. This is done through an HTTP interface.</p>
+<p>All URLs to access and modify models are under the URL <code>/data/&lt;model&gt;/</code>.</p>
+<h2 id="get">GET</h2>
+<h3 id="datamodel">/data/&lt;model&gt;</h3>
+<p>Retrieve all rows under the model.</p>
+<pre><code>GET /data/articles</code></pre>
+<h3 id="datamodelfieldvalue">/data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;</h3>
+<p>Retrieve rows under a model where the field matches the value.</p>
+<pre><code>GET /data/articles/_id/5196eecb08e4860000000001</code></pre>
+<h3 id="datamodelfieldfromto">/data/&lt;model&gt;/&lt;field&gt;/&lt;from&gt;/&lt;to&gt;</h3>
+<p>Retrieve rows under a model where the field matches a range between two values: from and to.</p>
+<pre><code>GET /data/articles/likes/0/100</code></pre>
+<h3 id="query-options">Query Options:</h3>
+<ul>
+<li><p><code>?limit=[skip,]offset</code>: Limit the amount of rows returned. Skip is the starting point (defaults to <code>0</code>). Offset is how many rows to return after the starting point.</p></li>
+<li><p><code>?sort=field[,asc|desc]</code>: Sort the results based on a field in ascending or descending order (defaults to ascending).</p></li>
+<li><p><code>?single=true</code>: If one result is returned, return the object instead of a single element array.</p></li>
+</ul>
+<h2 id="post">POST</h2>
+<h3 id="datamodel-1">/data/&lt;model&gt;</h3>
+<p>Insert a new row into a model. The body of the POST request can be formatted in JSON or standard form data.</p>
+<pre><code>POST /data/articles/
+{title: &quot;New post&quot;, category: &quot;news&quot;, body: &quot;This is the content&quot;}
+title=New%20post&amp;category=news&amp;body=This%20is%20the%20content</code></pre>
+<h3 id="datamodelfieldvalue-1">/data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;</h3>
+<p>Update existing data in a model.</p>
+<pre><code>POST /data/articles/_id/5196eecb08e4860000000001
+{category: &quot;tech&quot;}</code></pre>
+<h3 id="datamodelfieldvalueinc">/data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;/inc</h3>
+<p>Increment a numerical field. The body should have the field to increment as the key and the difference as the value. Can be a negative number to decrement.</p>
+<pre><code>POST /data/articles/_id/5196eecb08e4860000000001/inc
+{thumbsUp: 1}</code></pre>
+<h3 id="query-options-1">Query Options:</h3>
+<ul>
+<li><code>?goto=url</code>: After the POST redirect to a URL.</li>
+</ul>
+<h2 id="delete">DELETE</h2>
+<h3 id="datamodel-2">/data/&lt;model&gt;</h3>
+<p>Remove an entire model. Be very careful with this!</p>
+<pre><code>DELETE /data/articles/</code></pre>
+<h3 id="datamodelfieldvalue-2">/data/&lt;model&gt;/&lt;field&gt;/&lt;value&gt;</h3>
+<p>Remove all rows where the field matches the value.</p>
+<pre><code>DELETE /data/articles/_id/5196eecb08e4860000000001</code></pre>
+<h3 id="query-options-2">Query Options:</h3>
+<ul>
+<li><code>?goto=url</code>: After the DELETE redirect to a URL.</li>
+</ul>
+<h2 id="built-in-fields">Built-In fields</h2>
+<p>Every row in a model comes with useful fields.</p>
+<ul>
+<li><code>_id</code>: A unique value to each row.</li>
+<li><code>_created</code>: UNIX timestamp of when the row was created.</li>
+<li><code>_creator</code>: The ID of the user who created the row.</li>
+<li><code>_creatorName</code>: The username of the creator.</li>
+<li><code>_lastUpdated</code>: UNIX timestamp of when the row was last modified.</li>
+<li><code>_lastUpdator</code>: The ID of the user who last updated the row.</li>
+<li><code>_lastUpdatorName</code>: The username of the user who last updated the row.</li>
+</ul>
+<h1 id="permissions">Permissions</h1>
+<p>Sproute has user accounts built-in so security is simple. You must create a <a href="#routes">route</a> and specify which user type can access that route. Users that do not match this type will be given an error.</p>
+<h2 id="user-types">User Types</h2>
+<p>The default user types are <code>admin</code> and <code>member</code>. You may extend this by updating the <code>users</code> <a href="#models">model</a> and creating a values array in order of superiority (see Heirarchy below).</p>
+<p>There are other special built-in user types you may use when specifying permissions:</p>
+<ul>
+<li><code>admin</code>: At least one admin account exists when Sproute is first installed. This account is defined in the <a href="#settings">Settings</a>.</li>
+<li><code>owner</code>: Will ensure the <a href="#built-in-fields"><code>_creator</code></a> matches the logged in user.</li>
+<li><code>member</code>: Any logged in user.</li>
+<li><code>anyone</code>: No requirement.</li>
+<li><code>stranger</code>: Must <em>not</em> be logged in.</li>
+</ul>
+<h2 id="heirarchy">Heirarchy</h2>
+<p>All user types have a heirarchy of superiority. The default order is <code>admin &gt; owner &gt; member &gt; anyone</code>. This means any permission you give to a user type is also given to user types above it.</p>
+<h1 id="users">Users</h1>
+<p>Sproute comes with User Accounts straight out-of-the-box. To make use of them you should create some <a href="#pages">pages</a> to send requests to the following end-points.</p>
+<h2 id="endpoints">Endpoints</h2>
+<h3 id="post-apilogin">POST /api/login</h3>
+<ul>
+<li><code>name</code>: Username of the account.</li>
+<li><code>pass</code>: Password of the account.</li>
+</ul>
+<p>Create a session on the server for a user. If they are already logged in, an error will be returned.</p>
+<h3 id="get-apilogout">GET /api/logout</h3>
+<p>Sending a GET request to this URL will logout the currently logged in user. This is as simple as creating an anchor in HTML.</p>
+<pre><code>&lt;a href=&quot;/api/logout?goto=/&quot;&gt;Logout&lt;/a&gt;</code></pre>
+<h3 id="post-apiregister">POST /api/register</h3>
+<ul>
+<li><code>email</code>: Email address.</li>
+<li><code>name</code>: Username.</li>
+<li><code>pass</code>: Password.</li>
+<li><code>role</code>: Role; defaults to <code>member</code>.</li>
+</ul>
+<p>Use this end-point over <code>/data/users</code>. Will create a new user with the data provided. If you have extended the user model, include the data in the body.</p>
+<p>When specifying a role, you will only be allowed to use the lowest role (<code>member</code>). If you are logged in when creating a user, you can set the role to your level or lower. So if you are logged in as <code>admin</code>, you can set the role to <code>admin</code> or lower.</p>
+<h3 id="get-apilogged">GET /api/logged</h3>
+<p>Returns the object of the user logged or <code>false</code> if not logged in. Add the query parameter <code>?reload=true</code> to query the database if the user row has been updated.</p>
+<h3 id="post-apiupdate">POST /api/update</h3>
+<ul>
+<li><code>pass</code>: User's current password.</li>
+<li><code>newpass</code>: Optional if updating user's password.</li>
+</ul>
+<p>Allow a user to update their password and other associated data. Must include their current password for security.</p>
+<p><em>Note: Updating the password through the HTTP interface will not correctly encrypt it.</em></p>
+<h3 id="post-apiforgot">POST /api/forgot</h3>
+<ul>
+<li><code>name</code>: User name of the forgotten account password.</li>
+</ul>
+<p>Send a recovery email to the <code>name</code> field assuming a valid email address. This will include a unique link valid for 2 hours. The link will take them to a special URL, <code>/api/recover</code> and will render any page named <code>recover</code> with the variable <code>newpass</code>.</p>
+<h2 id="session-storage">Session Storage</h2>
+<p>The session is persisted through a cookie with <code>maxage</code> set to 0 or forever. This can only be destroyed through <code>/api/logout</code>.</p>
+<h1 id="settings">Settings</h1>
+<p>Here you will find some settings to tweak for more advanced features.</p>
+<h2 id="error-view">Error View</h2>
+<p>When an error occurs render a custom page instead of the default JSON response. The page will have a list of error messages under <code>error</code>.</p>
+<p>To force an API to return JSON instead of the rendered error page, submit the request with an <code>Accept</code> header of <code>application/json</code> or <code>application/javascript</code>.</p>
+<pre><code>{{ each error as e }}
+    &lt;div&gt;{{e.message}}&lt;/div&gt;
+{{ / }}</code></pre>
+<h2 id="recaptcha">reCAPTCHA</h2>
+<p>To implement a CAPTCHA you can use <a href="https://www.google.com/recaptcha/admin/create">reCAPTCHA</a> by setting up a public and private key.</p>
+<p>Put the private key in the config then to use a CAPTCHA in a form, use the template tag:</p>
+<pre><code>{{ captcha &lt;public key&gt; }}</code></pre>
+<h2 id="rate-limit">Rate Limit</h2>
+<p>To avoid spamming on your space, you can set a rate limit in seconds to prevent frequent POST requests.</p>
+<h2 id="url">URL</h2>
+<p>When using a custom domain, put the full URL here for any links that need to point to the space such as password recovery emails. Make sure to leave off a trailing backslash <code>/</code>.</p>
+<p>You must change your DNS settings on the domain so that the A record points to <code>115.146.76.79</code>.</p>
+<h1 id="static-files">Static Files</h1>
+<p>There is currently no way to upload static files for images, CSS or JavaScript on Sproute. We're not in that business. Thankfully the web is flexible about where the files come from however so we'll go through two supported methods.</p>
+<h3 id="inline">1. Inline</h3>
+<p>Using <code>&lt;script&gt;</code> or <code>&lt;style&gt;</code> you can include the code inside the header page for use in other pages. You could even create a page specially for CSS/JS and simply include it into the header:</p>
+<pre><code>&lt;style&gt;
+{{ include mycss }}
+&lt;/style&gt;</code></pre>
+<h3 id="external-providers">2. External Providers</h3>
+<p>You may use other services to host the static files and simply hotlink directly from the Sproute HTML. Here is a list of services:</p>
+<ol style="list-style-type: decimal">
+<li><p><a href="http://dropbox.com"><strong>Dropbox</strong></a> is hugely popular and the free tier means you can host plenty of static text files.</p></li>
+<li><p><a href="http://aws.amazon.com/s3/"><strong>Amazon S3</strong></a> has a 12-month free period but after that is incredibly cheap.</p></li>
+<li><p><a href="http://github.com"><strong>Github</strong></a> has unlimited free plans but can have issues with not serving the correct Content Type.</p></li>
+<li><p><a href="http://rackspace.com/cloud/files/"><strong>Rackspace CloudFiles</strong></a> has no free plans but is very reasonably priced.</p></li>
+</ol>
+</div>
+
+<script>
+var codeBlocks = document.querySelectorAll("code");
+var block;
+
+for (var i = 0; i < codeBlocks.length; ++i) {
+	block = codeBlocks[i];
+	block.innerHTML = colorize(block.innerText || block.textContent);
+}
+
+function colorize (html) {	
+	html = html.replace(/<([^>]+)>/g, "&lt;<span class='angle'>$1</span>&gt;")
+	html = html.replace(/("[^"]*")/g, "<span class='value'>$1</span>")
+	html = html.replace(/\{\{(.+?)\}\}/g, "\{{<span class='brace'>$1</span>}}")
+	html = html.replace(/(\/\/[^\n]+)/g, "<span class='comment'>$1</span>")
+
+	return html;
+}
+
+function generateTOC (rootNode, startLevel, stopLevel) {
+	var lastLevel = 0;
+	startLevel = startLevel || 2; //which H# tag to start indexing.
+	var html = "<ul>";
+	 
+	//loop every node in rootNode
+	for (var i = 0; i < rootNode.childNodes.length; ++i) {
+		var node = rootNode.childNodes[i];
+
+		//skip nodes that aren't <H#> tags
+		if (!node.tagName || !/H[0-9]/i.test(node.tagName)) {
+			continue;
+		}
+
+		var level = +node.tagName.substr(1);
+
+		//only parse at the start level
+		if (level < startLevel) { continue; }
+		if (level > stopLevel) { continue; }
+
+		//if the <H#> tag has any children, take the text of the first child
+		//else grab the text of the <H#> tag
+		var name = node.innerText || node.textContent;
+		if (node.children.length) { name = node.childNodes[0].innerText || node.childNodes[0].textContent; }
+		
+		//skip this node if there is no name
+		if (!name) { continue; }
+		name = name.replace(/\</g, "&lt;");
+		name = name.replace(/\>/g, "&gt;");
+
+		//create a string that can be used for an anchor hash based
+		//on the name but without dots or spaces
+		var hashable = node.id || name.replace(/[\.\s]/g, "-");
+		
+		//set the id of the <H#> tag to this hash
+		node.id = hashable;
+		
+		//generate the HTML
+		if (level > lastLevel) {
+			html += "";
+		} else if (level < lastLevel) {
+			html += (new Array(lastLevel - level + 2)).join("</ul></li>");
+		} else {
+			html += "</ul></li>";
+		}
+
+		html += "<li class='lvl"+level+"'><a class='lvl"+level+"' href='#" + hashable + "'>" + name + "</a><ul>";
+		lastLevel = level;
+	}
+	 
+	html += "</ul>";
+	return html;
+}
+
+document.getElementById("nav").innerHTML = generateTOC(document.getElementById("content"), 1)
+</script>
+
+</body>
+</html>

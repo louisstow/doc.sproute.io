@@ -1,0 +1,79 @@
+</div>
+
+<script>
+var codeBlocks = document.querySelectorAll("code");
+var block;
+
+for (var i = 0; i < codeBlocks.length; ++i) {
+	block = codeBlocks[i];
+	block.innerHTML = colorize(block.innerText || block.textContent);
+}
+
+function colorize (html) {	
+	html = html.replace(/<([^>]+)>/g, "&lt;<span class='angle'>$1</span>&gt;")
+	html = html.replace(/("[^"]*")/g, "<span class='value'>$1</span>")
+	html = html.replace(/\{\{(.+?)\}\}/g, "\{{<span class='brace'>$1</span>}}")
+	html = html.replace(/(\/\/[^\n]+)/g, "<span class='comment'>$1</span>")
+
+	return html;
+}
+
+function generateTOC (rootNode, startLevel, stopLevel) {
+	var lastLevel = 0;
+	startLevel = startLevel || 2; //which H# tag to start indexing.
+	var html = "<ul>";
+	 
+	//loop every node in rootNode
+	for (var i = 0; i < rootNode.childNodes.length; ++i) {
+		var node = rootNode.childNodes[i];
+
+		//skip nodes that aren't <H#> tags
+		if (!node.tagName || !/H[0-9]/i.test(node.tagName)) {
+			continue;
+		}
+
+		var level = +node.tagName.substr(1);
+
+		//only parse at the start level
+		if (level < startLevel) { continue; }
+		if (level > stopLevel) { continue; }
+
+		//if the <H#> tag has any children, take the text of the first child
+		//else grab the text of the <H#> tag
+		var name = node.innerText || node.textContent;
+		if (node.children.length) { name = node.childNodes[0].innerText || node.childNodes[0].textContent; }
+		
+		//skip this node if there is no name
+		if (!name) { continue; }
+		name = name.replace(/\</g, "&lt;");
+		name = name.replace(/\>/g, "&gt;");
+
+		//create a string that can be used for an anchor hash based
+		//on the name but without dots or spaces
+		var hashable = node.id || name.replace(/[\.\s]/g, "-");
+		
+		//set the id of the <H#> tag to this hash
+		node.id = hashable;
+		
+		//generate the HTML
+		if (level > lastLevel) {
+			html += "";
+		} else if (level < lastLevel) {
+			html += (new Array(lastLevel - level + 2)).join("</ul></li>");
+		} else {
+			html += "</ul></li>";
+		}
+
+		html += "<li class='lvl"+level+"'><a class='lvl"+level+"' href='#" + hashable + "'>" + name + "</a><ul>";
+		lastLevel = level;
+	}
+	 
+	html += "</ul>";
+	return html;
+}
+
+document.getElementById("nav").innerHTML = generateTOC(document.getElementById("content"), 1)
+</script>
+
+</body>
+</html>

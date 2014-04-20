@@ -16,10 +16,10 @@ Using `<script>` or `<style>` you can include the code inside the header page fo
 
 You may use other services to host the static files and simply hotlink directly from the Sproute HTML. Here is a list of services:
 
-- [**Dropbox**](http://dropbox.com) is hugely popular and the free tier means you can host plenty of static text files.
+1. [**Dropbox**](http://dropbox.com) is hugely popular and the free tier means you can host plenty of static text files.
 
-- [**Amazon S3**](http://aws.amazon.com/s3/) has a 12-month free period but after that is incredibly cheap.
+2. [**Amazon S3**](http://aws.amazon.com/s3/) has a 12-month free period but after that is incredibly cheap.
 
-- [**Github**](http://github.com) has unlimited free plans but can have issues with not serving the correct Content Type.
+3. [**Github**](http://github.com) has unlimited free plans but can have issues with not serving the correct Content Type.
 
-- [**Rackspace CloudFiles**](http://rackspace.com/cloud/files/) has no free plans but is very reasonably priced.
+4. [**Rackspace CloudFiles**](http://rackspace.com/cloud/files/) has no free plans but is very reasonably priced.

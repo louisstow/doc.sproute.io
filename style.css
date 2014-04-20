@@ -1,0 +1,187 @@
+@charset "utf-8";
+
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1em;
+	line-height: 1em;
+}
+
+a {
+	color: #111;
+}
+
+#header {
+	width: 25%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	overflow: auto;
+	padding: 0 10px;
+	box-sizing: border-box;
+	border-right: 1px solid #666;
+	line-height: 1.2em;
+}
+
+#header a {
+	text-decoration: none;
+}
+
+#header a:active {
+	color: #9133FF;
+}
+
+#header h1 {
+	margin: 20px 0 0 0;
+	padding: 0;
+}
+
+#nav ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+#nav li {
+	margin: 5px 0;
+}
+
+#nav a.lvl1 {
+	font-size: 1.4em;
+	font-weight: 800;
+	padding: 20px 0 0px 0;
+	display: block;
+}
+
+#nav a.lvl2 {
+	font-size: 1.2em;
+	display: block;
+	padding: 5px 0;
+}
+
+#nav a.lvl3 {
+	font-size: 0.9em;
+	padding-left: 15px;
+}
+
+#content {
+	box-sizing: border-box;
+	width: 75%;
+	margin-left: 25%;
+	padding: 20px;
+	line-height: 1.3em;
+}
+
+#content h3 {
+	font-family: Monaco, Consolas, Courier New, Lucida Console, monospace;
+	font-size: 0.9em;
+	font-weight: normal;
+	padding: 5px 0;
+	
+	border: solid #444;
+	border-width: 2px 0 2px 0;
+}
+
+#content ul {
+	list-style: none;
+	padding-left: 0;
+	margin-left: 15px;
+}
+
+#content ul li:before {
+	content: "- ";
+	color: #666;
+	font-weight: 100;
+}
+
+#content p {
+	margin-left: 15px;
+}
+
+#content li p {
+	display: inline;
+}
+
+#content h1 {
+	margin: 0;
+	padding: 10px 0;
+}
+
+#content h2 {
+	margin: 0;
+	padding: 10px 0;
+}
+
+#content li code {
+	font-weight: 900;
+}
+
+p.lead {
+	font-size: 1.3em;
+	line-height: 1.4em;
+}
+
+code {
+	vertical-align: top;
+	padding: 0 3px;
+}
+
+pre {
+	font-family: Monaco, Consolas, Courier New, Lucida Console, monospace;
+	font-size: 13px;
+	padding: 5px 15px;
+	margin: 20px 0 0 0;
+	color: #444;
+	background-color: #f5f5f5;
+}
+
+pre code {
+	background: transparent;
+	padding: 0;
+	border: 0;
+	font-size: 13px;
+}
+
+p > em {
+	color: #444;
+}
+
+.price {
+	float: right;
+	font-weight: normal;
+	font-size: 20px;
+}
+
+.template {
+	color: #5df;
+}
+
+.examples {
+	margin-top: 20px;
+}
+
+.code-example strong {
+	float: right;
+	background: rgba(255,255,255,0.2);
+	color: #111;
+	padding: 2px 10px;
+	font-size: 16px;
+	border-bottom-left-radius: 5px;
+}
+
+.angle {
+	color: rgb(0, 145, 151);
+}
+
+.brace {
+	color: rgb(196, 6, 38);
+}
+
+.comment {
+	color: #ccc;
+}
+
+.value {
+	color: rgb(0, 26, 219);
+}

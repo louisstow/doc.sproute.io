@@ -1,6 +1,6 @@
 # Pages
 
-A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables. To render a page you need a matching [route](/docs/routes) to point to the page.
+A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables. To render a page you need a matching [route](#routes) to point to the page.
 
 Template tags are wrapped with two curly braces starting with `{{` and ending with `}}`.
 
@@ -12,11 +12,11 @@ When you want to evaluate a variable inside a tag, use either a colon at the sta
 - `role`: Role of the user to make the GET request as (optional).
 - `variable`: Save the data in the variable provided.
 
-Retrieve data from the database through the [HTTP interface](/docs/rest#GET). The result is placed in the variable you provide after `as`.
+Retrieve data from the database through the [HTTP interface](#GET). The result is placed in the variable you provide after `as`.
 
-You may optionally provide a [user type](/docs/permissions#user-types) to make the request as a different role if the logged in user would otherwise not be able to complete.
+You may optionally provide a [user type](#user-types) to make the request as a different role if the logged in user would otherwise not be able to complete.
 
-*Note: This will not work for every URL, only paths to the [HTTP interface](/docs/rest).*
+*Note: This will not work for every URL, only paths to the [HTTP interface](#http-interface).*
 
 ~~~
 {{ get /data/articles/ as articles }}
@@ -32,11 +32,11 @@ You may optionally provide a [user type](/docs/permissions#user-types) to make t
 - `role`: Role of the user to make the GET request as (optional).
 - `variable`: Save the response in the variable provided.
 
-Store data in the database through the [HTTP interface](/docs/rest#POST). The result is placed in the variable you provide after `as`.
+Store data in the database through the [HTTP interface](#POST). The result is placed in the variable you provide after `as`.
 
-With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a [user type](/docs/permissions#user-types). This is useful for creating pages that require special logic or processing before storing the data.
+With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a [user type](#user-types). This is useful for creating pages that require special logic or processing before storing the data.
 
-*Note: This will not work for every URL, only paths to the [HTTP interface](/docs/rest).*
+*Note: This will not work for every URL, only paths to the [HTTP interface](#http-interface).*
 
 ~~~
 {{ set data.title Hello }}
@@ -175,7 +175,7 @@ Include and evaluate another page. Can also be plain HTML. Will only search in t
 
 ### {{ &lt;variable&gt; }}
 
-Will replace the tag with the variable contents in the HTML rendered. By default the value will replace all HTML with HTML entities (`<` is replaced with `&lt;`). This is for security reasons to prevent XSS where users can inject JavaScript into your webpage.
+Will replace the tag with the variable contents in the HTML rendered. By default the value will replace all HTML with HTML entities (`<` is replaced with `&amp;lt;`). This is for security reasons to prevent XSS where users can inject JavaScript into your webpage.
 
 `{{ #<variable> }}` will do the same but will not escape the HTML. This should only be used if the data is trusted, such as if an administrator created it.
 
@@ -240,7 +240,7 @@ If you actually want two curly braces in your page without it being a tag, you c
 When rendering a page, you have access to a variety of variables.
 
 ### params
-This object contains the placeholders specified from the [routes](/docs/routes).
+This object contains the placeholders specified from the [routes](#routes).
 
 ### query
 URLs can have query variables (e.g. `?queryOption=hi`). You can access this through the `query` object.

@@ -1,6 +1,6 @@
 # Users
 
-Sproute comes with User Accounts straight out-of-the-box. To make use of them you should create some [pages](/docs/pages) to send requests to the following end-points.
+Sproute comes with User Accounts straight out-of-the-box. To make use of them you should create some [pages](#pages) to send requests to the following end-points.
 
 ## Endpoints
 ### POST /api/login
