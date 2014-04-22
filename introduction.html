@@ -1,2 +1,10 @@
-<p class="lead">Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a Reddit app or watch the Getting Started video.</p>
+<p class="lead">Welcome the Sproute documentation. There are 4 main concepts that you will need to understand for building a Sproute app:</p>
 
+<p><strong>Pages</strong><br />
+Pages are just like HTML files with embedded template tags. This is a similar model to PHP where a request runs scripts in a page.</p>
+<p><strong>Routes</strong><br />
+Routes are a neat way to make pretty SEO-friendly URLs. You create a pattern and if a request matches that pattern, it will render a page. We can include wildcards and placeholders in the route so when the page is rendered we have information about what was requested in the placeholder.</p>
+<p><strong>Models</strong><br />
+Models form the dynamic parts of the web app. Think of it like a database table. You define fields on a model and some integrity properties like maximum length, uniqueness, data type etc.</p>
+<p><strong>Permissions</strong><br />
+Permissions are defined at the very end and is a way to limit parts of your application to a certain user-type. For instance you would only want an Admin to be able to delete an entire model and not just anyone. Permissions are implemented in the same way as routes with URL patterns but instead of pointing to a page, it points to a required user-type before the request can be full filed. Think of it as the gate keeper before letting the request go through.</p>

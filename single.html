@@ -1,17 +1,280 @@
 <html>
 <head>
 	<meta charset="utf-8"> 
-	<link href="./style.css" rel="stylesheet" />
+	<style>
+	{css}
+@charset "utf-8";
+
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1em;
+	line-height: 1em;
+}
+
+a {
+	color: #111;
+}
+
+#header {
+	width: 300px;
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	overflow: auto;
+	padding: 0 10px;
+	
+	border-right: 1px solid #666;
+	line-height: 1.2em;
+	min-width: 100px;
+
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+a.logo {
+	display: block;
+	margin-top: 20px;
+	text-align: center;
+}
+
+a.logo span {
+	color: #555;
+}
+
+#header a {
+	text-decoration: none;
+}
+
+#header a:active {
+	color: #9133FF;
+}
+
+#header h1 {
+	margin: 20px 0 0 0;
+	padding: 0;
+}
+
+#nav ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+#nav li {
+	margin: 5px 0;
+}
+
+#nav a.lvl1 {
+	font-size: 1.4em;
+	font-weight: 800;
+	padding: 20px 0 0px 0;
+	display: block;
+}
+
+#nav a.lvl2 {
+	font-size: 1.2em;
+	display: block;
+	padding: 5px 0;
+
+}
+
+#nav a.lvl3 {
+	font-size: 0.9em;
+	padding-left: 15px;
+	display: block;
+}
+
+#content {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	
+	
+	margin-left: 300px;
+	padding: 20px;
+	line-height: 1.3em;
+}
+
+#content h3 {
+	font-family: Monaco, Consolas, Courier New, Lucida Console, monospace;
+	font-size: 0.9em;
+	font-weight: normal;
+	padding: 5px 0;
+	
+	border: solid #444;
+	border-width: 2px 0 2px 0;
+}
+
+#content ul {
+	list-style: none;
+	padding-left: 0;
+	margin-left: 15px;
+}
+
+#content ul li:before {
+	content: "- ";
+	color: #666;
+	font-weight: 100;
+}
+
+#content ul li {
+	margin: 10px 0;
+}
+
+#content p {
+	margin-left: 15px;
+}
+
+#content li p {
+	display: inline;
+}
+
+#content h1 {
+	margin: 0;
+	padding: 10px 0;
+}
+
+#content h2 {
+	margin: 0;
+	padding: 10px 0;
+}
+
+#content li code {
+	font-weight: 900;
+}
+
+p.lead {
+	font-size: 1.3em;
+	line-height: 1.4em;
+}
+
+code {
+	vertical-align: top;
+	padding: 0 3px;
+}
+
+pre {
+	font-family: Monaco, Consolas, Courier New, Lucida Console, monospace;
+	font-size: 13px;
+	padding: 5px 15px;
+	margin: 20px 0 0 0;
+	color: #444;
+	background-color: #f5f5f5;
+	overflow: auto;
+}
+
+pre code {
+	background: transparent;
+	padding: 0;
+	border: 0;
+	font-size: 13px;
+
+}
+
+p > em {
+	color: #444;
+}
+
+.price {
+	float: right;
+	font-weight: normal;
+	font-size: 20px;
+}
+
+.template {
+	color: #5df;
+}
+
+.examples {
+	margin-top: 20px;
+}
+
+.code-example strong {
+	float: right;
+	background: rgba(255,255,255,0.2);
+	color: #111;
+	padding: 2px 10px;
+	font-size: 16px;
+	border-bottom-left-radius: 5px;
+}
+
+.angle {
+	color: rgb(0, 145, 151);
+}
+
+.brace {
+	color: rgb(196, 6, 38);
+}
+
+.comment {
+	color: #ccc;
+}
+
+.value {
+	color: rgb(0, 26, 219);
+}
+
+#top {
+	position: fixed;
+	right: 15px;
+	top: 0px;
+	background: rgba(255,255,255,0.6);
+	padding: 10px;
+}
+
+#top a { text-decoration: none }
+
+@media only screen and (max-width: 580px) {
+	#header {
+		position: static;
+		width: 100%;
+		border-bottom: 2px solid #222;
+	}
+
+	#content {
+		width: 100%;
+		margin: 0;
+	}
+}	</style>
+	<link href="/public/images/favicon.png" rel="shortcut icon" />
+	<title>Sproute Documentation</title>
 </head>
 <body>
 
 <div id="header">
-<h1><a href="#">Sproute Doc</a></h1>
+<a href="#" class="logo">
+	<img src="https://getsproute.com/public/images/logo-2.png" />
+	<span>API</span>
+</a>
+
 <div id="nav"></div>
 </div>
-<div id="content">
-	<div id="top"><a href="#">Top &uparrow;</a></div><p class="lead">Welcome to the Sproute documentation. Before diving into the docs, be sure to go through the guide for building a Reddit app or watch the Getting Started video.</p>
 
+<div id="content">
+	<div id="top"><a href="#">Top &uparrow;</a></div>
+<p class="lead">Welcome the Sproute documentation. There are 4 main concepts that you will need to understand for building a Sproute app:</p>
+
+<p><strong>Pages</strong><br />
+Pages are just like HTML files with embedded template tags. This is a similar model to PHP where a request runs scripts in a page.</p>
+<p><strong>Routes</strong><br />
+Routes are a neat way to make pretty SEO-friendly URLs. You create a pattern and if a request matches that pattern, it will render a page. We can include wildcards and placeholders in the route so when the page is rendered we have information about what was requested in the placeholder.</p>
+<p><strong>Models</strong><br />
+Models form the dynamic parts of the web app. Think of it like a database table. You define fields on a model and some integrity properties like maximum length, uniqueness, data type etc.</p>
+<p><strong>Permissions</strong><br />
+Permissions are defined at the very end and is a way to limit parts of your application to a certain user-type. For instance you would only want an Admin to be able to delete an entire model and not just anyone. Permissions are implemented in the same way as routes with URL patterns but instead of pointing to a page, it points to a required user-type before the request can be full filed. Think of it as the gate keeper before letting the request go through.</p><h1 id="guides">Guides</h1>
+<ul>
+<li><strong><a href="/docs/reddit">Reddit</a></strong>. Create a reddit clone from scratch. Very good beginners guide.</li>
+<li><strong><a href="/docs/chatapp">Chat App</a></strong>. Build an app to exchange messages between users with support for Firefox OS.</li>
+<li><strong><a href="/docs/blogapp">Blog</a></strong>. A simple single user blog platform. Intermediate level recommended.</li>
+<li><strong><a href="/docs/cmsapp">CMS</a></strong>. Create a content management system with pages and custom URLs. Intermediate level recommended.</li>
+<li><strong><a href="/docs/imageapp">Image Sharing</a></strong>. Create a Dribbble clone to share images, like them and comment on them. Intermediate level recommended.</li>
+<li><strong><a href="https://hacks.mozilla.org/2014/03/building-a-persistent-notes-app-for-firefox-os/">Notes / Pastebin</a></strong>. Create a pastebin or notes app where text can be set to public or private.</li>
+<li><strong><a href="http://www.onextrapixel.com/2014/03/11/how-to-create-a-portfolio-from-scratch-with-sproute/">Portfolio</a></strong>. Build a portfolio with dynamic work entries and custom themes.</li>
+<li><strong><a href="/docs/firefoxos">Firefox OS</a></strong>. Learn how to support Firefox OS for both hosted and packaged apps.</li>
+</ul>
 <h1 id="pages">Pages</h1>
 <p>A page is an HTML file with template tags. The template language allows you to request data, include pages, evaluate expressions, set and render variables. To render a page you need a matching <a href="#routes">route</a> to point to the page.</p>
 <p>Template tags are wrapped with two curly braces starting with <code>{{</code> and ending with <code>}}</code>.</p>

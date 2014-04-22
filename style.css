@@ -30,6 +30,16 @@ a {
 	-webkit-box-sizing: border-box;
 }
 
+a.logo {
+	display: block;
+	margin-top: 20px;
+	text-align: center;
+}
+
+a.logo span {
+	color: #555;
+}
+
 #header a {
 	text-decoration: none;
 }
