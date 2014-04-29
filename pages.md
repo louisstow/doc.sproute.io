@@ -26,13 +26,14 @@ You may optionally provide a [user type](#user-types) to make the request as a d
 {{ /each }}
 ~~~
 
-### {{ post &lt;url&gt; &lt;data&gt; [&lt;role&gt;] as &lt;variable&gt; }}
+### {{ post &lt;url&gt; &lt;data&gt; [&lt;role&gt;] as &lt;variable&gt;[,&lt;error&gt;] }}
 - `url`: URL to store data in the database.
 - `data`: Name of the object variable with the data to store.
 - `role`: Role of the user to make the GET request as (optional).
 - `variable`: Save the response in the variable provided.
+- `error`: Save the error in the variable provided.
 
-Store data in the database through the [HTTP interface](#POST). The result is placed in the variable you provide after `as`.
+Store data in the database through the [HTTP interface](#POST). The result is placed in the variable you provide after `as`. Should an error occur, you can capture it by providing an error variable after the response variable.
 
 With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a [user type](#user-types). This is useful for creating pages that require special logic or processing before storing the data.
 
@@ -41,7 +42,23 @@ With this tag you may modify data that the logged in user would otherwise not ha
 ~~~
 {{ set data.title Hello }}
 {{ set data.body Goodbye }}
-{{ post /data/articles/ data admin as articles }}
+{{ post /data/articles/ data admin as articles,err }}
+~~~
+
+### {{ delete &lt;url&gt; [&lt;role&gt;] as &lt;error&gt; }}
+- `url`: URL to store data in the database.
+- `data`: Name of the object variable with the data to store.
+- `role`: Role of the user to make the GET request as (optional).
+- `variable`: Save the response in the variable provided.
+
+Delete data in the database through the [HTTP interface](#DELETE). Should an error occur it will be placed in the variable you provide after `as`.
+
+With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a [user type](#user-types). This is useful for creating pages that require special logic or processing before storing the data.
+
+*Note: This will not work for every URL, only paths to the [HTTP interface](#http-interface).*
+
+~~~
+{{ delete /data/articles/ admin as err }}
 ~~~
 
 ### {{ each &lt;collection&gt; as &lt;variable&gt; }}

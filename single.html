@@ -294,19 +294,31 @@ Permissions are defined at the very end and is a way to limit parts of your appl
     &lt;h1&gt;{{article.title}}&lt;/h1&gt;
     {{article.body}}
 {{ /each }}</code></pre>
-<h3 id="post-url-data-role-as-variable">{{ post &lt;url&gt; &lt;data&gt; [&lt;role&gt;] as &lt;variable&gt; }}</h3>
+<h3 id="post-url-data-role-as-variableerror">{{ post &lt;url&gt; &lt;data&gt; [&lt;role&gt;] as &lt;variable&gt;[,&lt;error&gt;] }}</h3>
+<ul>
+<li><code>url</code>: URL to store data in the database.</li>
+<li><code>data</code>: Name of the object variable with the data to store.</li>
+<li><code>role</code>: Role of the user to make the GET request as (optional).</li>
+<li><code>variable</code>: Save the response in the variable provided.</li>
+<li><code>error</code>: Save the error in the variable provided.</li>
+</ul>
+<p>Store data in the database through the <a href="#POST">HTTP interface</a>. The result is placed in the variable you provide after <code>as</code>. Should an error occur, you can capture it by providing an error variable after the response variable.</p>
+<p>With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a <a href="#user-types">user type</a>. This is useful for creating pages that require special logic or processing before storing the data.</p>
+<p><em>Note: This will not work for every URL, only paths to the <a href="#http-interface">HTTP interface</a>.</em></p>
+<pre><code>{{ set data.title Hello }}
+{{ set data.body Goodbye }}
+{{ post /data/articles/ data admin as articles,err }}</code></pre>
+<h3 id="delete-url-role-as-error">{{ delete &lt;url&gt; [&lt;role&gt;] as &lt;error&gt; }}</h3>
 <ul>
 <li><code>url</code>: URL to store data in the database.</li>
 <li><code>data</code>: Name of the object variable with the data to store.</li>
 <li><code>role</code>: Role of the user to make the GET request as (optional).</li>
 <li><code>variable</code>: Save the response in the variable provided.</li>
 </ul>
-<p>Store data in the database through the <a href="#POST">HTTP interface</a>. The result is placed in the variable you provide after <code>as</code>.</p>
+<p>Delete data in the database through the <a href="#DELETE">HTTP interface</a>. Should an error occur it will be placed in the variable you provide after <code>as</code>.</p>
 <p>With this tag you may modify data that the logged in user would otherwise not have permission to complete by manually entering a <a href="#user-types">user type</a>. This is useful for creating pages that require special logic or processing before storing the data.</p>
 <p><em>Note: This will not work for every URL, only paths to the <a href="#http-interface">HTTP interface</a>.</em></p>
-<pre><code>{{ set data.title Hello }}
-{{ set data.body Goodbye }}
-{{ post /data/articles/ data admin as articles }}</code></pre>
+<pre><code>{{ delete /data/articles/ admin as err }}</code></pre>
 <h3 id="each-collection-as-variable">{{ each &lt;collection&gt; as &lt;variable&gt; }}</h3>
 <ul>
 <li><code>collection</code>: List of data to iterate through.</li>
